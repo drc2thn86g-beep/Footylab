@@ -1,59 +1,61 @@
-# FootyLab ⚽
+# FootyLab ⚽ — Fußball ist Kopfsache.
 
-Ein kostenloses Fußball-Minigame-Portal auf Basis von React, TypeScript, Vite und Cloudflare Workers.
+Kostenlose Fußball-Quiz-Arcade. Eigenständiges Magazin-/Sport-Design, vier Spiele, vollständig responsiv.
 
-## Seiten
+**Live-Adresse:** https://footylab.zmpfp75f5k.workers.dev/
 
-- `/` – Startseite mit Spieleauswahl
-- `/games/higher-lower` – Marktwert-, Trophäen- und Statistikvergleiche; Endlosmodus und 10-Fragen-Runde
-- `/games/career-path` – Errate den Profi anhand seiner Vereinsstationen (8 Fragen)
-- `/games/football-grid` – 3×3-Rätsel: Vereine × Nationalitäten
+## Spiele
 
-## Lokal starten
+| Pfad | Spiel | Funktionen |
+| --- | --- | --- |
+| `/` | Portal | Redaktionelle Startseite und Spielauswahl |
+| `/games/higher-lower` | Higher or Lower | Marktwerte, Europapokal-Trophäen und Statistiken. 10 Fragen oder Endlosmodus; drei Schwierigkeitsgrade; automatischer Wechsel nach 1,65 s, rechte Karte wird zur nächsten linken Karte; lokale Bestwerte |
+| `/games/career-path` | Career Path | 18 kuratierte Spielerkarrieren, 10 zufällige Fragen pro Runde, zufällige Antwortreihenfolge und automatischer Fragenwechsel |
+| `/games/football-grid` | Football Grid | Drei unterschiedliche 3×3-Grids; Verein × Nationalität; je vier Antwortmöglichkeiten; Ergebnisse und neuer Durchlauf |
+| `/games/wer-bin-ich` | Wer bin ich? | 12 bekannte Profis, bis zu vier Hinweise, Punkte abhängig von Hinweisanzahl, acht zufällige Fragen |
+| `/bildnachweise` | Bildnachweise | Fotografen, Commons-Originale und CC-Lizenzen |
+
+## Entwicklung lokal
+
+Voraussetzung: Node.js 22 oder neuer.
 
 ```bash
 npm install
 npm run dev
-```
-
-Für den Produktions-Build:
-
-```bash
 npm run build
 ```
 
+`npm run build` prüft TypeScript und erstellt die Website in `dist/`.
+
 ## Deployment
 
-GitHub-Repository: https://github.com/drc2thn86g-beep/Footylab
+Das GitHub-Repository `drc2thn86g-beep/Footylab` ist mit Cloudflare Workers verbunden.
 
-Cloudflare Workers ist an GitHub gekoppelt und baut bei Änderungen an `main` automatisch.
+- Branch: `main`
+- Build: `npm run build`
+- Deploy: `npx wrangler deploy`
+- Wrangler-Konfiguration: `wrangler.jsonc`, Assets aus `./dist`
+- SPA-Fallback: `single-page-application` (direkte Links zu Spielseiten)
+- GitHub Actions validiert nach jedem Push den Produktions-Build unter **Actions → FootyLab Build**.
 
-- **Build command:** `npm run build`
-- **Deploy command:** `npx wrangler deploy`
-- **Static assets directory:** `./dist` (in `wrangler.jsonc`)
-- **SPA fallback:** `single-page-application` (damit die Spiel-Unterseiten auch per Direktlink funktionieren)
+## Struktur
 
-Öffentliche Testadresse: https://footylab.zmpfp75f5k.workers.dev/
+- `src/main.tsx`: Portal, Navigation, Spielrouten und Bildnachweise
+- `src/games.tsx`: die vier interaktiven Spiele, automatischer Wechsel, Punktelogik
+- `src/data.ts`: Higher-or-Lower-Vergleichsdatensätze samt Quellen und Datenstand
+- `src/gameData.ts`: Career Path, Football Grid und Wer bin ich?
+- `src/media.ts`: kleine Liste lizenzierter Wikimedia-Commons-Spielerfotos inkl. Urheber und Lizenz
+- `src/style.css`: individuelles, responsives Print-/Sport-Magazin-Design
+- `public/favicon.svg`: selbst gestaltetes FootyLab-Favicon
 
-## Inhalte ergänzen
+## Daten & Bilder
 
-- `src/data.ts`: Higher-or-Lower-Kategorien mit Werten, Datenstand und Quellen
-- `src/gameData.ts`: Career-Path-Fragen sowie Antworten für Football Grid
-- `src/main.tsx`: Seiten und Spiellogik
-- `src/style.css`: Gemeinsames Layout und responsive Gestaltung
+Die Statistik- und Marktwertdaten sind **redaktionelle Momentaufnahmen**, kein Live-Feed. Quellen sind in Higher or Lower direkt verlinkt. Bei Änderungen stets Wettbewerbsbezug, Messdatum und Werte nachprüfen.
 
-### Bilder und Vereinswappen
+Einige Fotos sind frei lizenziert und werden über Wikimedia Commons eingebunden. Auf der Seite `/bildnachweise` sind zu jedem Foto Urheber, Lizenz und Quelldatei verlinkt. Spielerkarten ohne Bild erhalten einen eigens gestalteten Platzhalter; es werden keine ungeprüften offiziellen Vereinswappen eingebettet.
 
-Die Vergleichskarten unterstützen ein optionales Feld `image` pro Datensatz-Eintrag:
+## Planung
 
-```ts
-{name: 'Beispielspieler', value: 100, image: '/images/beispielspieler.jpg'}
-```
+Als nächste mögliche Verbesserungen eignen sich zusätzliche Quellen für Vereinswappen mit geklärten Nutzungsrechten, größere Spielerdatensätze, weitere Grid-Varianten und eine freiwillige Anmeldung für globale Bestenlisten. Bis dahin bleiben Bestwerte lokal im Browser gespeichert.
 
-Fehlt das Bild oder ist die URL ungültig, erscheint automatisch eine gestaltete Karte mit Spieler- beziehungsweise Wappen-Symbol und Initialen.
-
-**Wichtig:** Vor der Veröffentlichung echter Spielerfotos oder geschützter Vereinslogos bitte die Nutzungsrechte prüfen. Keine fremden Bilder ungeprüft übernehmen.
-
-## Datenpflege
-
-Die vorhandenen Marktwerte und Statistiken sind Momentaufnahmen, keine Live-Daten. Quellen und Stand sind bei Higher or Lower hinterlegt; vor Updates die Angaben mit den Originalquellen vergleichen. Karriere- und Grid-Daten sind zunächst redaktionell kuratierte Quizfragen.
+`README` ist Teil des offenen Fanprojekts.
