@@ -41,19 +41,19 @@ export const gridBoards:GridBoard[]=[
 {answer:"Leandro Trossard",choices:["Leandro Trossard","Kevin De Bruyne","Eden Hazard","Thibaut Courtois"]},
 {answer:"Robin van Persie",choices:["Robin van Persie","Nathan Aké","Arjen Robben","Wesley Sneijder"]},
 {answer:"Frank Lampard",choices:["Frank Lampard","Phil Foden","Harry Kane","Declan Rice"]},
-{answer:"Eden Hazard",choices:["Eden Hazard","Romelu Lukaku","Kevin De Bruyne","Leandro Trossard"]},
-{answer:"Arjen Robben",choices:["Arjen Robben","Robin van Persie","Nathan Aké","Memphis Depay"]}
+{answer:"Eden Hazard",choices:["Eden Hazard","Youri Tielemans","Marouane Fellaini","Leandro Trossard"]},
+{answer:"Arjen Robben",choices:["Arjen Robben","Robin van Persie","Rafael van der Vaart","Memphis Depay"]}
 ]},
 {id:"world",label:"Südamerika & Portugal",rows:["FC Barcelona","Real Madrid","Juventus Turin"],columns:["Brasilien","Argentinien","Portugal"],cells:[
 {answer:"Ronaldinho",choices:["Ronaldinho","Vinicius Junior","Alex Sandro","Rodrygo"]},
 {answer:"Lionel Messi",choices:["Lionel Messi","Ángel Di María","Paulo Dybala","Lautaro Martínez"]},
-{answer:"André Gomes",choices:["André Gomes","Cristiano Ronaldo","João Cancelo","Bruno Fernandes"]},
+{answer:"André Gomes",choices:["André Gomes","Cristiano Ronaldo","Rúben Dias","Bruno Fernandes"]},
 {answer:"Vinicius Junior",choices:["Vinicius Junior","Ronaldinho","Alex Sandro","Neymar"]},
 {answer:"Ángel Di María",choices:["Ángel Di María","Lionel Messi","Paulo Dybala","Julián Álvarez"]},
 {answer:"Cristiano Ronaldo",choices:["Cristiano Ronaldo","André Gomes","João Cancelo","Bernardo Silva"]},
 {answer:"Alex Sandro",choices:["Alex Sandro","Vinicius Junior","Ronaldinho","Raphinha"]},
-{answer:"Paulo Dybala",choices:["Paulo Dybala","Lionel Messi","Ángel Di María","Sergio Agüero"]},
-{answer:"João Cancelo",choices:["João Cancelo","Cristiano Ronaldo","André Gomes","Bernardo Silva"]}
+{answer:"Paulo Dybala",choices:["Paulo Dybala","Lionel Messi","Julián Álvarez","Sergio Agüero"]},
+{answer:"João Cancelo",choices:["João Cancelo","Bruno Fernandes","André Gomes","Bernardo Silva"]}
 ]}
 ];
 export type IdentityQuestion={answer:string;choices:[string,string,string,string];clues:[string,string,string,string]};
