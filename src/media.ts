@@ -8,4 +8,4 @@ export const photos:Record<string,Photo>={
 "Mohamed Salah":{file:"Mohamed Salah.JPG",author:"Ultraslansi",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"}
 };
 export function photoUrl(name:string){const p=photos[name];return p?"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(p.file)+"?width=480":undefined}
-export function photoPage(name:string){const p=photos[name];return p?"https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(p.file.replaceAll(" ","_")):undefined}
+export function photoPage(name:string){const p=photos[name];return p?"https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(p.file.replace(/ /g,"_")):undefined}
