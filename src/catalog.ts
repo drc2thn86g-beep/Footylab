@@ -69,6 +69,31 @@ add("Ligue 1","OGC Nizza","Evann Guessand|Elfenbeinküste|S|2001;Gaëtan Laborde
 add("Ligue 1","Stade Rennes","Arnaud Kalimuendo|Frankreich|S|2002;Ludovic Blas|Frankreich|M|1997;Steve Mandanda|Frankreich|T|1985;Amine Gouiri|Algerien|S|2000");
 add("Ligue 1","RC Lens","Florian Sotoca|Frankreich|S|1990;Przemysław Frankowski|Polen|A|1995;Brice Samba|Frankreich|T|1994;Kevin Danso|Österreich|A|1998");
 add("Ligue 1","RC Strasbourg","Emanuel Emegha|Niederlande|S|2003;Habib Diarra|Senegal|M|2004;Dilane Bakwa|Frankreich|S|2002");
+
+// Frühere Weltstars ergänzen die aktuelle Auswahl um Fußballgeschichte.
+add("Premier League","Manchester United","Wayne Rooney|England|S|1985;David Beckham|England|M|1975;Ryan Giggs|Wales|M|1973;Paul Scholes|England|M|1974;Andy Cole|England|S|1971;Robin van Persie|Niederlande|S|1983;Cristiano Ronaldo|Portugal|S|1985;Rio Ferdinand|England|A|1978;Nemanja Vidić|Serbien|A|1981");
+add("Premier League","FC Liverpool","Steven Gerrard|England|M|1980;Fernando Torres|Spanien|S|1984;Roberto Firmino|Brasilien|S|1991;Sadio Mané|Senegal|S|1992;James Milner|England|M|1986;Michael Owen|England|S|1979;Dirk Kuyt|Niederlande|S|1980");
+add("Premier League","Chelsea","Frank Lampard|England|M|1978;John Terry|England|A|1980;Didier Drogba|Elfenbeinküste|S|1978;Petr Čech|Tschechien|T|1982;Eden Hazard|Belgien|S|1991;N'Golo Kanté|Frankreich|M|1991;Gianfranco Zola|Italien|S|1966");
+add("Premier League","Arsenal","Thierry Henry|Frankreich|S|1977;Patrick Vieira|Frankreich|M|1976;Mesut Özil|Deutschland|M|1988;Cesc Fàbregas|Spanien|M|1987;Robin van Persie|Niederlande|S|1983;Alexis Sánchez|Chile|S|1988");
+add("Premier League","Manchester City","Sergio Agüero|Argentinien|S|1988;David Silva|Spanien|M|1986;Yaya Touré|Elfenbeinküste|M|1983;Vincent Kompany|Belgien|A|1986;Raheem Sterling|England|S|1994");
+add("Premier League","Leicester City","Jamie Vardy|England|S|1987;Riyad Mahrez|Algerien|S|1991");
+add("La Liga","Real Madrid","Cristiano Ronaldo|Portugal|S|1985;Gareth Bale|Wales|S|1989;Ángel Di María|Argentinien|S|1988;Marcelo|Brasilien|A|1988;Iker Casillas|Spanien|T|1981;Pepe|Portugal|A|1983;Sami Khedira|Deutschland|M|1987");
+add("La Liga","FC Barcelona","Andrés Iniesta|Spanien|M|1984;Xavi|Spanien|M|1980;Sergio Busquets|Spanien|M|1988;Gerard Piqué|Spanien|A|1987;Jordi Alba|Spanien|A|1989;Ivan Rakitić|Kroatien|M|1988;David Villa|Spanien|S|1981");
+add("La Liga","Atlético Madrid","Diego Forlán|Uruguay|S|1979;Diego Costa|Spanien|S|1988;Fernando Torres|Spanien|S|1984");
+add("Bundesliga","Bayern München","Miroslav Klose|Deutschland|S|1978;Arjen Robben|Niederlande|S|1984;Franck Ribéry|Frankreich|S|1983;Philipp Lahm|Deutschland|A|1983;Bastian Schweinsteiger|Deutschland|M|1984;Mario Gómez|Deutschland|S|1985;Robert Lewandowski|Polen|S|1988;Mario Mandžukić|Kroatien|S|1986");
+add("Bundesliga","Borussia Dortmund","Pierre-Emerick Aubameyang|Gabun|S|1989;Shinji Kagawa|Japan|M|1989;Nuri Şahin|Türkei|M|1988;Ilkay Gündogan|Deutschland|M|1990");
+add("Bundesliga","1. FC Köln","Lukas Podolski|Deutschland|S|1985");
+add("Bundesliga","Werder Bremen","Mesut Özil|Deutschland|M|1988");
+add("Bundesliga","Schalke 04","Julian Draxler|Deutschland|M|1993;Benedikt Höwedes|Deutschland|A|1988");
+add("Serie A","AC Mailand","Zlatan Ibrahimović|Schweden|S|1981;Kaká|Brasilien|M|1982;Olivier Giroud|Frankreich|S|1986;Andrij Schewtschenko|Ukraine|S|1976;Andrea Pirlo|Italien|M|1979;Paolo Maldini|Italien|A|1968");
+add("Serie A","Juventus Turin","Gianluigi Buffon|Italien|T|1978;Giorgio Chiellini|Italien|A|1984;Claudio Marchisio|Italien|M|1986;Paul Pogba|Frankreich|M|1993");
+add("Serie A","AS Rom","Francesco Totti|Italien|S|1976;Daniele De Rossi|Italien|M|1983;Edin Džeko|Bosnien und Herzegowina|S|1986");
+add("Serie A","SSC Neapel","Diego Maradona|Argentinien|M|1960;Marek Hamšík|Slowakei|M|1987;Dries Mertens|Belgien|S|1987;Gonzalo Higuaín|Argentinien|S|1987;Lorenzo Insigne|Italien|S|1991");
+add("Serie A","Inter Mailand","Wesley Sneijder|Niederlande|M|1984;Samuel Eto'o|Kamerun|S|1981;Ronaldo Nazário|Brasilien|S|1976;Javier Zanetti|Argentinien|A|1973");
+add("Ligue 1","Paris Saint-Germain","Edinson Cavani|Uruguay|S|1987;Thiago Silva|Brasilien|A|1984;Blaise Matuidi|Frankreich|M|1987");
+add("Ligue 1","Olympique Lyon","Hugo Lloris|Frankreich|T|1986;Nabil Fekir|Frankreich|M|1993;Alexandre Lacazette|Frankreich|S|1991");
+add("Ligue 1","AS Monaco","Wissam Ben Yedder|Frankreich|S|1990");
+
 // Clubquiz: historische/typische Zuordnung zur Liga, ausdrücklich kein Ligastatus 2026/27.
 const clubEntries:Record<League,string[]>={
  "Premier League":["Manchester City","Manchester United","Arsenal","FC Liverpool","Chelsea","Tottenham Hotspur","Newcastle United","Aston Villa","Everton","West Ham United","Wolverhampton Wanderers","Brighton & Hove Albion","Crystal Palace","Fulham","Brentford","Nottingham Forest","AFC Bournemouth","Leicester City","Southampton","Leeds United","Burnley","Sheffield United","Ipswich Town","Sunderland"],
@@ -79,6 +104,6 @@ const clubEntries:Record<League,string[]>={
 };
 export const allClubs:Club[]=(Object.keys(clubEntries) as League[]).flatMap(league=>clubEntries[league].map(name=>({name,league,country:leagueCountries[league]})));
 export const allPlayers:Player[]=Array.from(new Map(players.map(p=>[p.name,p])).values());
-export const playablePlayers:Player[]=allPlayers.filter(p=>p.birthYear>=1985);
+export const playablePlayers:Player[]=allPlayers.filter(p=>p.birthYear>=1975);
 export const playerByName=new Map(allPlayers.map(p=>[p.name,p]));
 export const leagueNames=Object.keys(leagueCountries) as League[];
