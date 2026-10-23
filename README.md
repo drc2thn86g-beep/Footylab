@@ -5,6 +5,20 @@ Kostenloses Fußball-Minigame-Portal im Browser mit eigenständigem Print-/Sport
 **Testseite:** https://footylab.zmpfp75f5k.workers.dev/  
 **Repository:** https://github.com/drc2thn86g-beep/Footylab
 
+## Automatische Kaderaktualisierung per API (Vorbereitung eingebaut)
+
+FootyLab besitzt jetzt einen Cloudflare-Worker mit API-Football-Anbindung, D1-Cache und täglichem Cron-Trigger. **Nach dem einmaligen Einrichten von Cloudflare D1 und einem privaten API-Football-Schlüssel** werden die Kader der fünf großen Ligen in kleinen täglichen Paketen aktualisiert; Nutzeraufrufe verbrauchen kein API-Kontingent.
+
+- Kostenloser API-Football-Tarif laut Anbieter: 100 Anfragen pro Tag, mit Einschränkungen bei verfügbaren Saisons.
+- Backend: `worker/`; D1-Datenbank-Schema: `migrations/0001_api_football.sql`.
+- Geplanter Abgleich täglich um 03:23 UTC, maximal 32 Mannschaften plus periodisch 5 Ligaanfragen.
+- Neue Live-Kaderansicht auf `/datenbank`, mit aktuellem Importdatum und Fehleranzeige.
+- Freies Football Wordle verwendet den API-Kader, sobald er ausreichend geprüft vorliegt; Tagesrätsel bleibt stabil.
+- Die bestehenden redaktionellen Daten dienen als Fallback und für historische Quiz-Fragen.
+- **Noch nicht live aktiviert:** Eine D1-Datenbank-ID und das geheime API-Football-Token müssen vom Cloudflare-Kontoinhaber eingerichtet werden. Ohne diese bleibt die bisherige Site uneingeschränkt nutzbar.
+
+**[Vollständige einmalige Aktivierungsanleitung und Einschränkungen](docs/API-FOOTBALL.md)**
+
 ## Spiele und Wege
 
 | URL-Pfad | Spiel | Spielmechanik |
@@ -50,6 +64,7 @@ Dateien:
 
 ```bash
 npm run check:db
+npm run check:api
 npm run db:export
 ```
 
