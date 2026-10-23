@@ -531,3 +531,35 @@ h1,h2,h3,p{margin-top:0}
  .db-stats strong{font-size:31px}
  .db-club-players{grid-template-columns:1fr}
 }
+
+
+/* API-Football – sichtbarer Datenstand und Quellen auf der Datenbankseite */
+.live-squads{margin:10px clamp(17px,5vw,76px) 30px;background:#193626;color:#f4f2e7;border:3px solid #193626;padding:clamp(16px,3vw,27px)}
+.live-squads-title{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.live-squads-title h2{font:900 clamp(32px,5vw,55px)/.95 'Barlow Condensed',Impact,sans-serif;margin:9px 0 0}
+.api-status-icon{color:#1b3525;background:#e4ee7d;display:flex;align-items:center;justify-content:center;width:47px;height:47px}
+.live-squads-message{border:1px solid #769776;padding:17px;margin:22px 0 15px;display:flex;gap:11px;align-items:flex-start;color:#d7e8d2;font-size:13px;line-height:1.6}
+.live-squads-message strong{display:block;color:#e7ef92;font-size:15px}
+.live-squads-message>p{margin:0}
+.live-squads-message svg{flex-shrink:0;color:#e5ef84;margin-top:2px}
+.live-squads-count{display:flex;gap:18px;flex-wrap:wrap;align-items:center;border-block:2px solid #678a68;margin:19px 0 17px;padding:12px 0;font:700 11px 'IBM Plex Mono',monospace}
+.live-squads-count b{font:900 22px 'Barlow Condensed',Impact,sans-serif;color:#e9f18c}
+.live-squads-count>span:last-child{margin-left:auto;color:#d5e3d3}
+.live-squads-warning{display:flex;gap:8px;align-items:start;background:#604035;border-left:4px solid #f9bd8d;padding:10px;font-size:12px;line-height:1.5}
+.live-select-label{font:700 11px 'IBM Plex Mono',monospace;color:#e2ed8a;display:block;margin:15px 0 10px}
+.live-team-select{border:2px solid #e5ee8b;background:#f1efdf;color:#183526;padding:13px;font:800 15px 'DM Sans',sans-serif;width:min(100%,560px)}
+.live-team-head{display:flex;gap:13px;align-items:center;border-bottom:2px solid #7a9a80;padding:23px 0 13px}
+.live-team-head>svg{color:#e2ef82}
+.live-team-head>div{display:flex;flex-direction:column;gap:5px}
+.live-team-head strong{font:900 34px 'Barlow Condensed',Impact,sans-serif}
+.live-team-head small{font:700 10px 'IBM Plex Mono',monospace;color:#c3d8ba}
+.live-player-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:17px}
+.live-player-row{display:flex;align-items:center;gap:10px;background:#28503a;padding:9px;min-height:64px;min-width:0}
+.live-player-row img,.live-player-fallback{width:43px;height:46px;border:1px solid #9cba91;flex-shrink:0;object-fit:cover;background:#e1e9a5;color:#1d3928;display:flex;align-items:center;justify-content:center}
+.live-player-row>div{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+.live-player-row strong{font-size:13px;line-height:1.15;overflow-wrap:anywhere}
+.live-player-row small{font-size:11px;color:#cee1c9}
+.live-shirt-number{font:900 19px 'Barlow Condensed',Impact,sans-serif;color:#e4ee84}
+.live-squads-legal{border-top:1px solid #6e8a6b;padding-top:14px;color:#b9d2b6;font-size:11px;line-height:1.65;margin:20px 0 0}
+@media(max-width:920px){.live-player-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.live-player-list{grid-template-columns:1fr}.live-squads-count>span:last-child{margin-left:0;width:100%}.live-team-head strong{font-size:28px}}
