@@ -23,21 +23,28 @@ export const getCareer=(player:PlayerRecord):{record:CareerRecord;club:ClubRecor
  });
 };
 export const getHistoricalPlayers=(club:ClubRecord)=>[...(playersByClubId.get(club.id)??[])].sort((a,b)=>a.name.localeCompare(b.name,"de"));
+export const getCurrentPlayers=(club:ClubRecord)=>players.filter(p=>p.currentClubId===club.id).sort((a,b)=>a.name.localeCompare(b.name,"de"));
 export const getReferenceClub=(player:PlayerRecord)=>player.referenceClubId?clubById.get(player.referenceClubId):undefined;
 export const getCurrentClub=(player:PlayerRecord)=>player.currentClubId?clubById.get(player.currentClubId):undefined;
 export const databaseStats={
  playerCount:players.length,clubCount:clubs.length,careerCount:careerHistory.length,
  photoCount:mediaAssets.filter(a=>a.kind==="portrait").length,
  crestCount:mediaAssets.filter(a=>a.kind==="crest").length,
- verifiedPlayers:players.filter(p=>p.status==="verified-current").length
+ verifiedPlayers:players.filter(p=>p.currentClubId!==null&&p.status==="verified-current").length,
+ verifiedClubs:clubs.filter(c=>c.status==="verified-current").length
 };
 const isLeague=(name:string|null):name is League=>name!==null&&(leagueNames as readonly string[]).includes(name);
-/** Compatibility projection for Wordle: keeps existing hints while using canonical IDs.
- * The league/club fields are clearly marked as historic references, NOT live transfers. */
+/** Wordle verwendet ab jetzt ausschließlich Spieler mit einem durch die
+ * offizielle Saison-Kaderliste bestätigten aktuellen Verein.
+ * Geburtsjahr und Nationalität stammen noch aus dem redaktionellen
+ * Altbestand; neue, unvollständige Profile sind bis zur Prüfung ausgeschlossen. */
 export const wordlePlayers:LegacyPlayer[]=players.flatMap(player=>{
- const club=getReferenceClub(player);
- if(!club||!isLeague(club.historicalLeague))return[];
- return [{name:player.name,nation:player.country,position:player.position,birthYear:player.birthYear,club:club.name,league:club.historicalLeague}];
+ if(player.status!=="verified-current"||!player.currentClubId||player.country===null||
+    player.position===null||player.birthYear===null)return[];
+ const club=clubById.get(player.currentClubId);
+ if(!club||!isLeague(club.currentLeague))return[];
+ return [{name:player.name,nation:player.country,position:player.position,
+   birthYear:player.birthYear,club:club.name,league:club.currentLeague}];
 });
 export const playableWordlePlayers=wordlePlayers.filter(p=>p.birthYear>=1975);
 export const wordleByName=new Map(wordlePlayers.map(p=>[p.name,p]));
