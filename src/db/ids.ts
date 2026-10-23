@@ -1,4 +1,4 @@
-import{normalizeName}from"../normalize";
+import{normalizeName}from"../normalize.ts";
 
 /** Stable IDs derived from names until a data provider supplies canonical IDs.
  * Never use Array indexes as identifiers: API mappings can be added later. */
