@@ -8,7 +8,8 @@ export function stableSlug(name:string):string{
   .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
   .replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 }
-export const playerId=(name:string)=>"player:"+stableSlug(name);
+// Gleiche Schreibweise ohne Akzent, aber zwei verschiedene Brasilianer.
+export const playerId=(name:string)=>"player:"+(name==="Éderson"?"ederson-midfielder-1999":stableSlug(name));
 export const clubId=(name:string)=>"club:"+stableSlug(name);
 export const imageId=(kind:"player"|"club",name:string)=>"image:"+kind+":"+stableSlug(name);
 export const sameName=(a:string,b:string)=>normalizeName(a)===normalizeName(b);
