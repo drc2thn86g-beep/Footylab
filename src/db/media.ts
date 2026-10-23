@@ -1,4 +1,4 @@
-import{imageId,playerId}from"./ids";
+import{imageId,playerId}from"./ids.ts";
 import type{MediaAsset}from"./types";
 
 /** Nur Fotos mit dokumentierter Commons-Datei, Urheber und Lizenz aufnehmen.
