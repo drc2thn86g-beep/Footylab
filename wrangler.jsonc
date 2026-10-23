@@ -1,8 +1,18 @@
 {
   "name": "footylab",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-10-22",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "triggers": {
+    "crons": [
+      "23 3 * * *"
+    ]
   }
 }
