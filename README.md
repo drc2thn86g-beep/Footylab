@@ -16,11 +16,12 @@ Kostenloses Fußball-Minigame-Portal im Browser mit eigenständigem Print-/Sport
 | `/games/wer-bin-ich` | Wer bin ich? | 31 Spieler mit je vier Hinweisen; acht Fragen pro Runde; weniger Punkte je zusätzlichem Hinweis |
 | `/games/football-wordle` | Football Wordle | Spieler in acht Versuchen erraten; Freies Spiel und lokales Tagesrätsel; Hinweise zu Nation, Karriereverein, Liga, Position, Geburtsjahr (↑ jünger / ↓ älter), Autocomplete und gespeicherte Tages-Tipps |
 | `/games/klubkompass` | Klubkompass | 12 Fußballklubs einer historischen Heimatliga zuordnen; fünf Ligen; automatischer Fragenwechsel |
+| `/datenbank` | Datenbank | Suchbare Spieler- und Vereinsübersicht mit Liga- und Positionsfiltern |
 | `/bildnachweise` | Bildnachweise | Lizenz, Urheber und Commons-Dateilink vorhandener Spielerbilder |
 
 ## Redaktioneller Spielerkatalog
 
-Unter `src/catalog.ts` liegen über **370 unterschiedliche Spieler** aus historischen Karrieren der Premier League, La Liga, Bundesliga, Serie A und Ligue 1 und über **100 Vereinsnamen** für das Ligaquiz. Die Jahrgänge sind ein statisches Merkmal.
+Unter `src/catalog.ts` liegen **398 unterschiedliche Spieler** aus historischen Karrieren der Premier League, La Liga, Bundesliga, Serie A und Ligue 1 und **113 Vereinsnamen** für das Ligaquiz. Die Jahrgänge sind ein statisches Merkmal.
 
 **Wichtig:** Der beim Spieler angegebene Verein ist ein **Referenzverein aus seiner Karriere, nicht zwingend der gegenwärtige Klub**. Die Liga beschreibt dieselbe Referenzstation. Kein Kader-Live-Feed, keine automatischen Transferaktualisierungen und keine Behauptung einer lückenlosen Spielerliste für die Saison 2026/27. Der Klubkompass verwendet eine historische/typische Ligazugehörigkeit, nicht automatisch den aktuellen Aufstiegs-/Abstiegsstatus.
 
@@ -58,3 +59,7 @@ Die automatische GitHub-Validierung und die Cloudflare-Veröffentlichung sind zw
 ## Künftige Ideen
 
 Größere vollständig geprüfte Datenfeeds und lizenzierte Spielerfotos, mehr Grids, mobile PWA-Unterstützung und später ein serverseitiger Freundes-Mehrspielermodus mit Raumcodes. Multiplayer erst nach Stabilisierung der Einzelspieler-Spiele. Keine API-Schlüssel in die Browser-Anwendung einbauen.
+
+## Performance
+
+Die sechs Spiele und die Datenbank werden über React.lazy und dynamische Imports erst beim Aufruf der jeweiligen Unterseite geladen. Die Startseite bleibt damit leichtgewichtig, und ein kurzer Ladehinweis deckt langsamere Verbindungen ab.
