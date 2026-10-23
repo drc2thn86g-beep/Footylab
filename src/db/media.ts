@@ -15,7 +15,9 @@ export const photos:Record<string,Photo>={
  "Vinicius Junior":{file:"Vinícius Júnior Brazil V Morocco 13 June 2026-207.jpg",author:"Bryan Berlin / WikiPortraits",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
  "Lionel Messi":{file:"Leo Messi Argentina v Egypt 7 July 2026-1.jpg",author:"Bryan Berlin / WikiPortraits",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
  "Cristiano Ronaldo":{file:"Cristiano Ronaldo Croatia v Portugal 2 July 2026-075 (cropped).jpg",author:"Bryan Berlin / WikiPortraits",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/",changed:true},
- "Kevin De Bruyne":{file:"Kevin De Bruyne USMNT v Belgium Mar 28 2026-64 (cropped).jpg",author:"Bryan Berlin / WikiPortraits",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/",changed:true}
+ "Kevin De Bruyne":{file:"Kevin De Bruyne USMNT v Belgium Mar 28 2026-64 (cropped).jpg",author:"Bryan Berlin / WikiPortraits",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/",changed:true},
+ "Neymar":{file:"Neymar Junior Brazil V Morocco 13 June 2026-40.jpg",author:"Bryan Berlin / WikiPortraits",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
+ "Achraf Hakimi":{file:"Achraf Hakimi Brazil V Morocco 13 June 2026-156.jpg",author:"Bryan Berlin / WikiPortraits",license:"CC BY-SA 4.0",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"}
 };
 function commonsUrl(file:string){return"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(file)+"?width=480"}
 function commonsPage(file:string){return"https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(file.replace(/ /g,"_"))}
