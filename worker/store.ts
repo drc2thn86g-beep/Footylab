@@ -30,3 +30,18 @@ export async function leastRecentlySyncedTeams(db:D1,max:number):Promise<DbTeam[
  const result=await db.prepare("SELECT id,name,league_id,league,country,logo_url,last_synced_at FROM api_teams ORDER BY (last_synced_at IS NOT NULL),last_synced_at,id LIMIT ?").bind(max).all<DbTeam>();
  return result.results??[];
 }
+
+export type GameRosterRow={id:number;name:string;position:string|null;age:number|null;club:string;league:string;checked_at:string};
+export async function listGameRoster(db:D1):Promise<GameRosterRow[]>{
+ const result=await db.prepare(
+  "SELECT p.id,p.name,p.position,p.age,t.name AS club,t.league,r.checked_at FROM api_roster r JOIN api_players p ON p.id=r.player_id JOIN api_teams t ON t.id=r.team_id WHERE t.last_synced_at IS NOT NULL ORDER BY r.checked_at DESC"
+ ).all<GameRosterRow>();
+ // A transfer can temporarily appear in two cached team rosters until both
+ // teams refresh: retain the most recently checked membership for each API ID.
+ const seen=new Set<number>();
+ return (result.results??[]).filter(player=>{
+  if(seen.has(player.id))return false;
+  seen.add(player.id);
+  return true;
+ });
+}
