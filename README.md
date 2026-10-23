@@ -1,61 +1,60 @@
-# FootyLab ⚽ — Fußball ist Kopfsache.
+# FootyLab — Fußball ist Kopfsache ⚽
 
-Kostenlose Fußball-Quiz-Arcade. Eigenständiges Magazin-/Sport-Design, vier Spiele, vollständig responsiv.
+Kostenloses Fußball-Minigame-Portal im Browser mit eigenständigem Print-/Sportmagazin-Design.
 
-**Live-Adresse:** https://footylab.zmpfp75f5k.workers.dev/
+**Testseite:** https://footylab.zmpfp75f5k.workers.dev/  
+**Repository:** https://github.com/drc2thn86g-beep/Footylab
 
-## Spiele
+## Spiele und Wege
 
-| Pfad | Spiel | Funktionen |
+| URL-Pfad | Spiel | Spielmechanik |
 | --- | --- | --- |
-| `/` | Portal | Redaktionelle Startseite und Spielauswahl |
-| `/games/higher-lower` | Higher or Lower | Marktwerte, Europapokal-Trophäen und Statistiken. 10 Fragen oder Endlosmodus; drei Schwierigkeitsgrade; automatischer Wechsel nach 1,65 s, rechte Karte wird zur nächsten linken Karte; lokale Bestwerte |
-| `/games/career-path` | Career Path | 18 kuratierte Spielerkarrieren, 10 zufällige Fragen pro Runde, zufällige Antwortreihenfolge und automatischer Fragenwechsel |
-| `/games/football-grid` | Football Grid | Drei unterschiedliche 3×3-Grids; Verein × Nationalität; je vier Antwortmöglichkeiten; Ergebnisse und neuer Durchlauf |
-| `/games/wer-bin-ich` | Wer bin ich? | 12 bekannte Profis, bis zu vier Hinweise, Punkte abhängig von Hinweisanzahl, acht zufällige Fragen |
-| `/bildnachweise` | Bildnachweise | Fotografen, Commons-Originale und CC-Lizenzen |
+| `/` | Spielauswahl | Eigenständige, mobile Startseite |
+| `/games/higher-lower` | Higher or Lower | Marktwerte, Champions-League-Titel, Premier-League- und Bundesliga-Statistiken sowie Geburtsjahre. Automatische Vergleichskette ohne Weiter-Button, 10 Fragen oder Endlosmodus, drei Schwierigkeitsgrade, lokale Bestwerte |
+| `/games/career-path` | Career Path | 43 redaktionelle Spielerkarrieren; 10 zufällige Fragen pro Runde; automatische Fragenfolge |
+| `/games/football-grid` | Football Grid | Drei 3×3-Matrizen: Verein und Nationalität; vier Antwortmöglichkeiten je Feld |
+| `/games/wer-bin-ich` | Wer bin ich? | 31 Spieler mit je vier Hinweisen; acht Fragen pro Runde; weniger Punkte je zusätzlichem Hinweis |
+| `/games/football-wordle` | Football Wordle | Spieler in acht Versuchen erraten; Freies Spiel und lokales Tagesrätsel; Hinweise zu Nation, Karriereverein, Liga, Position, Geburtsjahr (↑ jünger / ↓ älter), Autocomplete und gespeicherte Tages-Tipps |
+| `/games/klubkompass` | Klubkompass | 12 Fußballklubs einer historischen Heimatliga zuordnen; fünf Ligen; automatischer Fragenwechsel |
+| `/bildnachweise` | Bildnachweise | Lizenz, Urheber und Commons-Dateilink vorhandener Spielerbilder |
 
-## Entwicklung lokal
+## Redaktioneller Spielerkatalog
 
-Voraussetzung: Node.js 22 oder neuer.
+Unter `src/catalog.ts` liegen über **370 unterschiedliche Spieler** aus historischen Karrieren der Premier League, La Liga, Bundesliga, Serie A und Ligue 1 und über **100 Vereinsnamen** für das Ligaquiz. Die Jahrgänge sind ein statisches Merkmal.
+
+**Wichtig:** Der beim Spieler angegebene Verein ist ein **Referenzverein aus seiner Karriere, nicht zwingend der gegenwärtige Klub**. Die Liga beschreibt dieselbe Referenzstation. Kein Kader-Live-Feed, keine automatischen Transferaktualisierungen und keine Behauptung einer lückenlosen Spielerliste für die Saison 2026/27. Der Klubkompass verwendet eine historische/typische Ligazugehörigkeit, nicht automatisch den aktuellen Aufstiegs-/Abstiegsstatus.
+
+Marktwerte und Torstatistiken für Higher or Lower stehen separat in `src/data.ts` mit Quellen und Stand; sie dürfen nur mit belegter Quellenprüfung geändert werden. Die Daten sind Momentaufnahmen.
+
+Karriere-Fragen, Football-Grid-Antworten und Wer-bin-ich-Hinweise stehen in `src/gameData.ts`.
+
+## Bilder und Lizenzen
+
+`src/media.ts` enthält eine kleine Liste Wikimedia-Commons-Dateien samt Urhebern und Lizenzen. Die Bilder werden nur eingeblendet, wenn ein URL-Eintrag vorhanden ist; andernfalls erscheint ein gestalteter Platzhalter. Es gibt bewusst **keinen ungeprüften Massenimport von Spielerfotos oder Vereinswappen**. Original- und Lizenzverweise: `/bildnachweise`.
+
+## Entwicklung
+
+Voraussetzung: Node.js 22+.
 
 ```bash
 npm install
 npm run dev
+npm run check:data
 npm run build
 ```
 
-`npm run build` prüft TypeScript und erstellt die Website in `dist/`.
+`npm run check:data` prüft u. a. die Kataloggröße, verschiedene Feldwerte, Geburtsjahre, eindeutige Spielernamen, Karrierefragen, Grid-Lösungen und Wer-bin-ich-Hinweise. GitHub Actions (`.github/workflows/build.yml`) führt diese Prüfung zusammen mit dem TypeScript/Vite-Produktions-Build nach jedem Push auf `main` aus.
 
 ## Deployment
 
-Das GitHub-Repository `drc2thn86g-beep/Footylab` ist mit Cloudflare Workers verbunden.
-
-- Branch: `main`
+Cloudflare Workers baut direkt vom GitHub-Branch `main`:
 - Build: `npm run build`
 - Deploy: `npx wrangler deploy`
-- Wrangler-Konfiguration: `wrangler.jsonc`, Assets aus `./dist`
-- SPA-Fallback: `single-page-application` (direkte Links zu Spielseiten)
-- GitHub Actions validiert nach jedem Push den Produktions-Build unter **Actions → FootyLab Build**.
+- Statische Dateien: `./dist` aus `wrangler.jsonc`
+- SPA-Fallback: `single-page-application`, damit alle Unterseiten direkt aufrufbar sind
 
-## Struktur
+Die automatische GitHub-Validierung und die Cloudflare-Veröffentlichung sind zwei getrennte Prozesse. Ein grüner GitHub-Build allein bestätigt noch nicht, dass Cloudflare die neueste Version veröffentlicht hat.
 
-- `src/main.tsx`: Portal, Navigation, Spielrouten und Bildnachweise
-- `src/games.tsx`: die vier interaktiven Spiele, automatischer Wechsel, Punktelogik
-- `src/data.ts`: Higher-or-Lower-Vergleichsdatensätze samt Quellen und Datenstand
-- `src/gameData.ts`: Career Path, Football Grid und Wer bin ich?
-- `src/media.ts`: kleine Liste lizenzierter Wikimedia-Commons-Spielerfotos inkl. Urheber und Lizenz
-- `src/style.css`: individuelles, responsives Print-/Sport-Magazin-Design
-- `public/favicon.svg`: selbst gestaltetes FootyLab-Favicon
+## Künftige Ideen
 
-## Daten & Bilder
-
-Die Statistik- und Marktwertdaten sind **redaktionelle Momentaufnahmen**, kein Live-Feed. Quellen sind in Higher or Lower direkt verlinkt. Bei Änderungen stets Wettbewerbsbezug, Messdatum und Werte nachprüfen.
-
-Einige Fotos sind frei lizenziert und werden über Wikimedia Commons eingebunden. Auf der Seite `/bildnachweise` sind zu jedem Foto Urheber, Lizenz und Quelldatei verlinkt. Spielerkarten ohne Bild erhalten einen eigens gestalteten Platzhalter; es werden keine ungeprüften offiziellen Vereinswappen eingebettet.
-
-## Planung
-
-Als nächste mögliche Verbesserungen eignen sich zusätzliche Quellen für Vereinswappen mit geklärten Nutzungsrechten, größere Spielerdatensätze, weitere Grid-Varianten und eine freiwillige Anmeldung für globale Bestenlisten. Bis dahin bleiben Bestwerte lokal im Browser gespeichert.
-
-`README` ist Teil des offenen Fanprojekts.
+Größere vollständig geprüfte Datenfeeds und lizenzierte Spielerfotos, mehr Grids, mobile PWA-Unterstützung und später ein serverseitiger Freundes-Mehrspielermodus mit Raumcodes. Multiplayer erst nach Stabilisierung der Einzelspieler-Spiele. Keine API-Schlüssel in die Browser-Anwendung einbauen.
