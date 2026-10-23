@@ -17,5 +17,12 @@ jobs:
         run: npm run check:data
       - name: Validate relational database and media rights
         run: npm run check:db
+      - name: Validate JSON database export
+        run: |
+          npm run db:export
+          test -s data/exports/players.json
+          test -s data/exports/clubs.json
+          test -s data/exports/career-history.json
+          test -s data/exports/media.json
       - name: Compile and build
         run: npm run build
