@@ -448,3 +448,86 @@ h1,h2,h3,p{margin-top:0}
  .discipline-options{grid-template-columns:1fr}
  .mode-options button{min-width:100%;flex-basis:100%}
 }
+
+
+/* FootyLab DB 2.0: Detailansichten und klare Provenienz */
+.db-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:3px solid #203829}
+.db-stats>div{display:flex;flex-direction:column;gap:4px;border-right:2px solid #203829;padding:17px 18px;background:#e3ed9a}
+.db-stats>div:first-child{border-left:2px solid #203829}
+.db-stats strong{font:900 46px/.9 'Barlow Condensed',Impact,sans-serif}
+.db-stats small{font:700 10px 'IBM Plex Mono',monospace;letter-spacing:.5px}
+.db-tabs{margin-top:20px}
+.db-tabs button{flex:1;justify-content:center}
+.db-entries{border-top:2px solid #1c3929}
+.db-entry{border-bottom:2px solid #283d2b}
+.db-entry-button{width:100%;background:transparent;border:0;color:#203828;display:flex;align-items:center;gap:16px;padding:12px 10px;text-align:left}
+.db-entry-button:hover{background:#e2e9bd}
+.db-entry-button>svg:last-child{flex-shrink:0;transition:transform .2s ease}
+.db-entry-button>svg:last-child.db-rotate{transform:rotate(180deg)}
+.db-avatar{width:69px;height:76px;flex:0 0 69px;background:linear-gradient(155deg,#aec7a8,#e3e7ca);display:inline-flex;align-items:center;justify-content:center;border:2px solid #34543b;overflow:hidden;color:#284332}
+.db-avatar-club{background:#e4ed9c}
+.db-avatar>img{width:100%;height:100%;object-fit:cover}
+.db-avatar-fallback{display:flex;flex-direction:column;align-items:center;gap:6px}
+.db-avatar-fallback small{font:900 18px 'Barlow Condensed',Impact,sans-serif;letter-spacing:.5px}
+.db-entry-name{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.db-entry-name strong{font:900 28px/.98 'Barlow Condensed',Impact,sans-serif}
+.db-entry-name small{font:650 11px/1.5 'DM Sans',sans-serif;color:#647461}
+.db-entry-club{min-width:185px;max-width:35%;display:flex;align-items:flex-end;flex-direction:column;text-align:right;gap:3px;font-weight:800;font-size:13px}
+.db-entry-club small{font:700 9px 'IBM Plex Mono',monospace;color:#647361}
+.db-details{background:#173426;color:#f1f0e5;border-top:3px solid #dfeb89;padding:23px 24px 25px}
+.db-details-header{display:flex;align-items:center;gap:20px;margin-bottom:19px}
+.db-details-header>.db-avatar{width:108px;height:122px;flex-basis:108px;border-color:#e2f09c}
+.db-tag{font:700 10px 'IBM Plex Mono',monospace;color:#e5f081;letter-spacing:.8px}
+.db-details-header h3{font:900 clamp(31px,4vw,49px)/.9 'Barlow Condensed',Impact,sans-serif;margin:10px 0}
+.db-details-header p{font-size:13px;color:#d1e0cd;line-height:1.5;margin:0}
+.db-current{background:#e1eb96;color:#223a2a;padding:13px 15px;display:flex;gap:14px;align-items:center;justify-content:space-between;font-size:12px}
+.db-current strong{font:800 10px 'IBM Plex Mono',monospace;white-space:nowrap}
+.db-current span{font-weight:700;text-align:right}
+.db-history-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:2px solid #87a18a;padding:20px 0 10px;font:900 24px 'Barlow Condensed',Impact,sans-serif}
+.db-history-title span{font:700 9px 'IBM Plex Mono',monospace;color:#c1d7bf}
+.db-history-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:14px 0}
+.db-history-item{display:flex;gap:11px;align-items:center;background:#274d36;padding:10px 12px;min-width:0}
+.db-history-item>span{font:800 10px 'IBM Plex Mono',monospace;color:#deea7e}
+.db-history-item strong{font-size:13px;overflow-wrap:anywhere;flex:1}
+.db-history-item small{font:800 9px 'IBM Plex Mono',monospace;color:#eff2aa}
+.db-subhead{padding:14px 0 10px;font:700 10px 'IBM Plex Mono',monospace;color:#e4ee9d}
+.db-club-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.db-club-chips span{font-size:12px;background:#294938;padding:9px 11px;color:#e7f1df}
+.db-club-players{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0}
+.db-club-players>div{display:flex;align-items:center;gap:8px;padding:8px;background:#2a4d36;font-weight:700;font-size:12px}
+.db-club-players .db-avatar{width:41px;height:45px;flex-basis:41px;border:1px solid #9ab596}
+.db-club-players .db-avatar-fallback small{font-size:11px}
+.db-club-players .db-avatar svg{width:19px;height:19px}
+.db-more-players{font-size:12px;color:#ecf38c}
+.db-caution{font:600 11px/1.7 'DM Sans',sans-serif;color:#cee2ca;margin:17px 0 0}
+.db-photo-source{border-top:1px solid #77967c;margin-top:17px;padding-top:13px;display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:11px;color:#dce7d1}
+.db-photo-source a{display:inline-flex;align-items:center;gap:2px;text-decoration:underline;color:#e4f28c}
+.db-explainer{display:flex;align-items:start;gap:14px;margin:22px 0 0;border:2px solid #27422f;padding:17px;color:#263e2e;background:#e5ead4}
+.db-explainer svg{flex:0 0 auto;color:#447e46}
+.db-explainer p{font-size:12px;line-height:1.7;margin:0}
+@media(max-width:760px){
+ .db-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .db-stats strong{font-size:38px}
+ .db-stats>div{padding:12px 13px}
+ .db-entry-button{padding:10px 5px;gap:10px}
+ .db-avatar{width:52px;height:56px;flex-basis:52px}
+ .db-avatar-fallback small{font-size:14px}
+ .db-avatar svg{height:21px;width:21px}
+ .db-entry-name strong{font-size:23px}
+ .db-entry-name small{font-size:10px}
+ .db-entry-club{min-width:90px;max-width:34%;font-size:11px}
+ .db-entry-club small{font-size:8px}
+ .db-details{padding:18px 12px}
+ .db-details-header{gap:12px}
+ .db-details-header>.db-avatar{width:81px;height:93px;flex-basis:81px}
+ .db-details-header h3{font-size:33px}
+ .db-current{align-items:flex-start;flex-direction:column;gap:7px}
+ .db-current span{text-align:left}
+ .db-history-list{grid-template-columns:1fr}
+ .db-club-players{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:390px){
+ .db-entry-club{display:none}
+ .db-stats strong{font-size:31px}
+ .db-club-players{grid-template-columns:1fr}
+}
