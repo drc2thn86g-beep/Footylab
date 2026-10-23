@@ -1,4 +1,4 @@
-import{listSquad,listTeams,stateGet,type D1}from"./store.ts";
+import{listGameRoster,listSquad,listTeams,stateGet,type D1}from"./store.ts";
 import{syncFootyData}from"./sync.ts";
 
 type Env={
@@ -46,6 +46,15 @@ async function handler(request:Request,env:Env):Promise<Response>{
     checkedAt:team.last_synced_at,logo:env.PUBLIC_API_IMAGES==="1"?team.logo_url:null
    }))},200,120);
   }catch{return failure(503,"Cloudflare-Datenbank noch nicht eingerichtet.")}
+ }
+ if(url.pathname==="/api/footy/game-roster"){
+  try{
+   const rows=await listGameRoster(env.DB);
+   // No raw provider photos in quiz JSON until image rights were reviewed.
+   return json({ok:true,provider:"API-Football",count:rows.length,
+    players:rows.map(p=>({id:p.id,name:p.name,club:p.club,league:p.league,
+     position:p.position,checkedAt:p.checked_at}))},200,300);
+  }catch{return failure(503,"Aktuelle Quiz-Kader sind noch nicht verfügbar.")}
  }
  if(url.pathname==="/api/footy/squad"){
   const id=Number(url.searchParams.get("team"));
