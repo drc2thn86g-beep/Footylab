@@ -1,6 +1,7 @@
 import React,{useMemo,useRef,useState}from"react";
 import{ArrowRight,ChevronLeft,RotateCcw,Search,Target}from"lucide-react";
-import{allPlayers,leagueNames,playablePlayers,playerByName,type Player,type League}from"./catalog";
+import{leagueNames,type Player,type League}from"./catalog";
+import{wordlePlayers as allPlayers,playableWordlePlayers as playablePlayers,wordleByName as playerByName}from"./db/queries";
 import{photoUrl}from"./media";
 
 function Intro({index,kind,title,description}:{index:string;kind:string;title:string;description:string}){
