@@ -1,5 +1,5 @@
-import{allPlayers,playerClubHistory}from"./catalog.ts";
-import{careers,gridBoards,type GridBoard}from"./gameData.ts";
+import{players,getCareer}from"./db/queries.ts";
+import{gridBoards,type GridBoard}from"./gameData.ts";
 import{normalizeName}from"./normalize.ts";
 
 /** Zusätzliche nachprüfbare Karrierestationen als mögliche Lösungen. */
@@ -44,10 +44,9 @@ function canonClub(value:string){
 function autoMatches(board:GridBoard,index:number){
  const club=canonClub(board.rows[Math.floor(index/3)]);
  const nation=board.columns[index%3];
- return allPlayers.filter(p=>{
-  if(p.nation!==nation)return false;
-  const history=[...(playerClubHistory.get(p.name)??[]),...(careers.find(c=>c.answer===p.name)?.clubs??[])];
-  return history.some(c=>canonClub(c)===club);
+ return players.filter(p=>{
+  if(p.country!==nation)return false;
+  return getCareer(p).some(entry=>canonClub(entry.club.name)===club);
  }).map(p=>p.name);
 }
 export function acceptedGridNames(board:GridBoard,index:number):string[]{
