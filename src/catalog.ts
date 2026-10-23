@@ -81,7 +81,7 @@ add("La Liga","Real Madrid","Cristiano Ronaldo|Portugal|S|1985;Gareth Bale|Wales
 add("La Liga","FC Barcelona","Andrés Iniesta|Spanien|M|1984;Xavi|Spanien|M|1980;Sergio Busquets|Spanien|M|1988;Gerard Piqué|Spanien|A|1987;Jordi Alba|Spanien|A|1989;Ivan Rakitić|Kroatien|M|1988;David Villa|Spanien|S|1981");
 add("La Liga","Atlético Madrid","Diego Forlán|Uruguay|S|1979;Diego Costa|Spanien|S|1988;Fernando Torres|Spanien|S|1984");
 add("Bundesliga","Bayern München","Miroslav Klose|Deutschland|S|1978;Arjen Robben|Niederlande|S|1984;Franck Ribéry|Frankreich|S|1983;Philipp Lahm|Deutschland|A|1983;Bastian Schweinsteiger|Deutschland|M|1984;Mario Gómez|Deutschland|S|1985;Robert Lewandowski|Polen|S|1988;Mario Mandžukić|Kroatien|S|1986");
-add("Bundesliga","Borussia Dortmund","Pierre-Emerick Aubameyang|Gabun|S|1989;Shinji Kagawa|Japan|M|1989;Nuri Şahin|Türkei|M|1988;Ilkay Gündogan|Deutschland|M|1990");
+add("Bundesliga","Borussia Dortmund","Pierre-Emerick Aubameyang|Gabun|S|1989;Shinji Kagawa|Japan|M|1989;Nuri Şahin|Türkei|M|1988;İlkay Gündoğan|Deutschland|M|1990");
 add("Bundesliga","1. FC Köln","Lukas Podolski|Deutschland|S|1985");
 add("Bundesliga","Werder Bremen","Mesut Özil|Deutschland|M|1988");
 add("Bundesliga","Schalke 04","Julian Draxler|Deutschland|M|1993;Benedikt Höwedes|Deutschland|A|1988");
