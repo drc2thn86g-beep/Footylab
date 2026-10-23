@@ -322,3 +322,13 @@ h1,h2,h3,p{margin-top:0}
 .wordle-league-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font:700 10px 'IBM Plex Mono',monospace}
 .wordle-league-filter select{border:2px solid #1b3024;background:#f2f0e5;padding:8px 10px;min-width:190px;color:#1b3024;font:700 13px 'DM Sans',Arial,sans-serif}
 @media(max-width:720px){.wordle-league-filter{width:100%;justify-content:space-between}.wordle-league-filter select{max-width:100%;flex:1;min-width:140px}}
+
+/* Wordle-Hinweise passen auf schmale Bildschirme ohne seitliches Scrollen */
+@media(max-width:720px){
+ .wordle-history{overflow-x:visible}
+ .wordle-guess{min-width:0;gap:6px}
+ .wordle-clues{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+ .wordle-clue{min-height:63px;padding:9px 8px}
+ .wordle-clue>span{font-size:11px}
+ .wordle-clue small{font-size:8px}
+}
