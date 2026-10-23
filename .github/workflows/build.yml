@@ -13,5 +13,7 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+      - name: Validate curated player and club data
+        run: npm run check:data
       - name: Compile and build
         run: npm run build
