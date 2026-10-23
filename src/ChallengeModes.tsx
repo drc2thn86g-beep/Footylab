@@ -41,7 +41,7 @@ export function CareerPathImproved(){
  return <><Intro id="02" type="KARRIERE" title="CAREER PATH" description="Erkenne den Profi an seinen Vereinsstationen. Spiele mit vier Antworten oder tippe den Namen selbst ein."/>
  <section className="config-panel"><ModeBar label="SCHWIERIGKEIT" value={mode} options={[{value:"choice",text:"KLASSISCH",hint:"4 Antworten · 1 Punkt"},{value:"type",text:"EXPERTE",hint:"Spieler selbst tippen · 2 Punkte"}]} onChange={reset}/></section>
  <section className="play-shell">
-  {finished?<Final title="KARRIEREN DURCHSCH AUT" score={score} max={deck.length*factor} onRestart={()=>reset()}/>:<>
+  {finished?<Final title="KARRIEREN DURCHSCHAUT" score={score} max={deck.length*factor} onRestart={()=>reset()}/>:<>
    <div className="play-top"><div><span className="eyebrow">KARRIERE / FRAGE {index+1} VON {deck.length}</span><h2>WEM GEHÖRT DIESE KARRIERE?</h2></div><div className="score-box"><div><small>PUNKTE</small><strong>{score}</strong></div><div><small>FRAGE</small><strong>{index+1}/10</strong></div></div></div>
    <div className="round-track"><div className="round-fill" style={{width:((index+1)/deck.length*100)+"%"}}/></div>
    <div className="career-timeline">{q.clubs.map((club,i)=><React.Fragment key={club+"-"+i}>{i>0&&<ArrowRight className="path-arrow" size={17}/>}<div className="club-stop"><span>{String(i+1).padStart(2,"0")}</span><Shield size={19}/><b>{club}</b></div></React.Fragment>)}</div>
