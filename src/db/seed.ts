@@ -43,7 +43,7 @@ for(const person of allPlayers)registerClub(person.club,person.league,leagueCoun
 for(const clubs of playerClubHistory.values())for(const club of clubs)registerClub(club);
 for(const question of careers)for(const club of question.clubs)registerClub(club);
 export const clubs:ClubRecord[]=[...byClubId.values()].sort((a,b)=>a.name.localeCompare(b.name,"de"));
-export const clubById:ReadOnlyMap<string,ClubRecord>=new Map(clubs.map(club=>[club.id,club]));
+export const clubById:ReadonlyMap<string,ClubRecord>=new Map(clubs.map(club=>[club.id,club]));
 
 const portraitIds=new Map(mediaAssets.filter(a=>a.kind==="portrait").map(a=>[a.entityId,a.id]));
 export const players:PlayerRecord[]=allPlayers.map(p=>({
@@ -51,9 +51,9 @@ export const players:PlayerRecord[]=allPlayers.map(p=>({
  currentClubId:null,
  referenceClubId:registerClub(p.club,p.league,leagueCountries[p.league]).id,
  portraitAssetId:portraitIds.get(playerId(p.name))??null,
- source:editorial,status:"historical-only"
+ source:editorial,status:"historical-only" as const
 })).sort((a,b)=>a.name.localeCompare(b.name,"de"));
-export const playerById:ReadOnlyMap<string,PlayerRecord>=new Map(players.map(p=>[p.id,p]));
+export const playerById:ReadonlyMap<string,PlayerRecord>=new Map(players.map(p=>[p.id,p]));
 
 const histories:CareerRecord[]=[];
 const seen=new Set<string>();
@@ -82,12 +82,12 @@ for(const [name,history]of playerClubHistory){
  }
 }
 export const careerHistory:CareerRecord[]=histories;
-export const careersByPlayerId:ReadOnlyMap<string,CareerRecord[]>=( ()=>{
+export const careersByPlayerId:ReadonlyMap<string,CareerRecord[]>=( ()=>{
  const indexed=new Map<string,CareerRecord[]>();
  for(const career of careerHistory)indexed.set(career.playerId,[...(indexed.get(career.playerId)??[]),career]);
  return indexed;
 })();
-export const playersByClubId:ReadOnlyMap<string,PlayerRecord[]>=( ()=>{
+export const playersByClubId:ReadonlyMap<string,PlayerRecord[]>=( ()=>{
  const index=new Map<string,PlayerRecord[]>();
  for(const career of careerHistory){
   const player=playerById.get(career.playerId);
