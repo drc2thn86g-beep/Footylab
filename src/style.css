@@ -332,3 +332,44 @@ h1,h2,h3,p{margin-top:0}
  .wordle-clue>span{font-size:11px}
  .wordle-clue small{font-size:8px}
 }
+
+
+/* Öffentliche Leseseite für den redaktionellen Spielerkatalog */
+.catalog-panel{margin:12px clamp(17px,5vw,76px) 80px;border-top:3px solid #1b3525}
+.catalog-tabs{display:flex;gap:0;border-bottom:2px solid #1b3525}
+.catalog-tabs button{display:flex;align-items:center;gap:9px;border:0;border-right:2px solid #1b3525;background:transparent;padding:17px 20px;font:900 23px 'Barlow Condensed',Impact,sans-serif}
+.catalog-tabs button.active{background:#183626;color:#e4f17d}
+.catalog-filters{display:flex;align-items:stretch;gap:9px;padding:22px 0;flex-wrap:wrap}
+.catalog-search{flex:1;min-width:205px;display:flex;align-items:center;gap:11px;padding:10px 14px;border:2px solid #1a3525}
+.catalog-search input{border:0;background:none;outline:0;min-width:0;flex:1;font-size:14px;color:#1d3627}
+.catalog-filters select{border:2px solid #1a3525;min-width:145px;background:#f4f2e7;color:#183425;padding:11px;font-size:12px;font-weight:800}
+.catalog-count{display:flex;align-items:center;gap:8px;justify-content:start;background:#e1ed83;padding:13px 17px;font:800 11px 'IBM Plex Mono',monospace}
+.catalog-count span{margin-left:auto;white-space:nowrap;font-weight:600;font-size:10px}
+.catalog-results{border-top:2px solid #1b3525}
+.catalog-row{display:flex;gap:17px;align-items:center;border-bottom:2px solid #213728;padding:13px 9px}
+.catalog-photo{width:65px;height:65px;background:#e0e89d;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#193427;border:2px solid #263b2b;overflow:hidden}
+.catalog-photo img{width:100%;height:100%;object-fit:cover}
+.catalog-name{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.catalog-name strong{font:900 25px/1 'Barlow Condensed',Impact,sans-serif}
+.catalog-name small{font:700 11px 'DM Sans',Arial,sans-serif;color:#61745c}
+.catalog-association{min-width:190px;max-width:40%;display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:5px}
+.catalog-association span{font-size:14px;font-weight:850}
+.catalog-association small{font:700 11px 'DM Sans',Arial,sans-serif;color:#63765c}
+.catalog-more{margin:21px auto;display:flex;align-items:center;gap:13px;justify-content:center;border:2px solid #1d3524;background:#e4ed7e;color:#173524;padding:14px 22px;font:900 21px 'Barlow Condensed',Impact,sans-serif}
+.catalog-empty{padding:45px 15px;text-align:center;color:#596b57;font-size:14px}
+.catalog-disclaimer{margin:24px 0 0;border-top:2px solid #1b3525;padding-top:20px;font-size:12px;line-height:1.8;color:#53614f}
+.catalog-disclaimer a{text-decoration:underline;font-weight:800}
+@media(max-width:720px){
+ .catalog-filters{flex-direction:column}
+ .catalog-filters select{width:100%}
+ .catalog-count{flex-wrap:wrap}
+ .catalog-count span{display:none}
+ .catalog-tabs button{flex:1;justify-content:center;font-size:19px;padding:13px 10px}
+ .catalog-row{gap:11px}
+ .catalog-photo{width:47px;height:51px}
+ .catalog-name strong{font-size:20px}
+ .catalog-name small{font-size:10px}
+ .catalog-association{min-width:100px;max-width:39%}
+ .catalog-association span{font-size:11px}
+ .catalog-association small{font-size:9px}
+}
