@@ -103,7 +103,7 @@ careers.push(...[
 ]);
 
 
-mysteries.push(...[
+const additionalMysteries:IdentityQuestion[]=[
 {answer:"Kylian Mbappé",choices:["Kylian Mbappé","Kingsley Coman","Ousmane Dembélé","Marcus Thuram"],clues:["Ich wurde in Paris geboren.","Ich spielte früh für AS Monaco.","Ich gewann die Fußball-WM 2018.","Ich traf im WM-Finale 2022 dreimal."]},
 {answer:"Jude Bellingham",choices:["Jude Bellingham","Declan Rice","Mason Mount","Phil Foden"],clues:["Ich wurde 2003 in England geboren.","Ich begann meine Profikarriere bei Birmingham City.","Ich spielte in der Bundesliga für Borussia Dortmund.","2023 wechselte ich zu Real Madrid."]},
 {answer:"Lamine Yamal",choices:["Lamine Yamal","Nico Williams","Pedri","Gavi"],clues:["Ich wurde 2007 geboren.","Ich durchlief die Jugend von Barcelona.","Ich gewann mit Spanien die EM 2024.","Bei der EM 2024 wurde ich der jüngste Torschütze der Turniergeschichte."]},
@@ -123,4 +123,5 @@ mysteries.push(...[
 {answer:"Wayne Rooney",choices:["Wayne Rooney","Harry Kane","Michael Owen","Jamie Vardy"],clues:["Ich gab mein Profidebüt als Teenager bei Everton.","Ich bin Engländer.","Ich spielte viele Jahre unter Sir Alex Ferguson.","Ich bin Rekordtorschütze von Manchester United."]},
 {answer:"Luis Suárez",choices:["Luis Suárez","Edinson Cavani","Darwin Núñez","Fernando Torres"],clues:["Ich bin uruguayischer Stürmer.","Ich spielte in den Niederlanden für Ajax.","Ich erzielte bei Liverpool viele Tore.","Ich spielte später mit Messi und Neymar im Angriff von Barcelona."]},
 {answer:"Xavi",choices:["Xavi","Andrés Iniesta","Sergio Busquets","Cesc Fàbregas"],clues:["Ich gewann mit Spanien 2010 die WM.","Ich war ein zentraler Spielmacher.","Ich spielte als Profi lange beim FC Barcelona.","Später war ich auch Trainer des FC Barcelona."]}
-]);
+];
+mysteries.push(...additionalMysteries);
