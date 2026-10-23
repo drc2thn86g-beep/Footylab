@@ -1,6 +1,6 @@
-import{allPlayers,playerClubHistory}from"./catalog";
-import{careers,gridBoards,type GridBoard}from"./gameData";
-import{normalizeName}from"./GuessInput";
+import{allPlayers,playerClubHistory}from"./catalog.ts";
+import{careers,gridBoards,type GridBoard}from"./gameData.ts";
+import{normalizeName}from"./normalize.ts";
 
 /** Zusätzliche nachprüfbare Karrierestationen als mögliche Lösungen. */
 const extras:Record<string,string[][]>={
