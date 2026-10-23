@@ -3,6 +3,7 @@ import{careers}from"../gameData.ts";
 import{worldClubs}from"../worldClubs.ts";
 import{clubId,playerId}from"./ids.ts";
 import{mediaAssets}from"./media.ts";
+import{officialSquads}from"./currentSquads.ts";
 import type{ClubRecord,PlayerRecord,CareerRecord,SourceRef}from"./types.ts";
 
 /** Erste Migration: vorhandene Quiz-Karrieren werden in Beziehungen überführt.
@@ -54,6 +55,41 @@ export const players:PlayerRecord[]=allPlayers.map(p=>({
  portraitAssetId:portraitIds.get(playerId(p.name))??null,
  source:editorial,status:"historical-only" as const
 })).sort((a,b)=>a.name.localeCompare(b.name,"de"));
+/** Saisonbezogene Fakten aus offiziellen, datierten Kaderquellen.
+ * Auch Spieler ohne geprüftes Geburtsjahr können im aktuellen Team gelistet
+ * werden; unbekannte Profilfelder bleiben ausdrücklich null. */
+const playerIndex=new Map(players.map(player=>[player.id,player]));
+for(const squad of officialSquads){
+ const club=byClubId.get(clubId(squad.club));
+ if(!club)throw new Error("Offizieller Teamdatensatz ohne Verein: "+squad.club);
+ const source:SourceRef={system:"official-club",url:squad.sourceUrl,checkedAt:squad.checkedAt};
+ club.currentLeague=squad.league;
+ club.status="verified-current";
+ club.source=source;
+ for(const member of squad.members){
+  const id=playerId(member.name);
+  const existing=playerIndex.get(id);
+  if(existing){
+   if(existing.currentClubId&&existing.currentClubId!==club.id)
+    throw new Error("Aktueller Doppelvertrag in Kaderquellen: "+member.name);
+   existing.currentClubId=club.id;
+   existing.status="verified-current";
+   existing.source=source;
+   if(member.position)existing.position=member.position;
+  }else{
+   const newPlayer:PlayerRecord={
+    id,name:member.name,country:null,birthYear:null,position:member.position,
+    currentClubId:club.id,referenceClubId:null,
+    portraitAssetId:portraitIds.get(id)??null,
+    source,status:"verified-current"
+   };
+   players.push(newPlayer);
+   playerIndex.set(id,newPlayer);
+  }
+ }
+}
+players.sort((a,b)=>a.name.localeCompare(b.name,"de"));
+
 export const playerById:ReadonlyMap<string,PlayerRecord>=new Map(players.map(p=>[p.id,p]));
 
 const histories:CareerRecord[]=[];
