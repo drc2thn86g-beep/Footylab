@@ -2,12 +2,10 @@ import React,{useMemo,useRef,useState}from"react";
 import{ArrowRight,Search}from"lucide-react";
 import{allPlayers}from"./catalog";
 import{careers,mysteries}from"./gameData";
+import{normalizeName}from"./normalize";
+export{normalizeName}from"./normalize";
 
 /** Bezeichnungen werden für die Suche vereinheitlicht; die angezeigten Namen bleiben unverändert. */
-export function normalizeName(value:string):string{
- return value.toLocaleLowerCase("de").replace(/ø/g,"o").replace(/ł/g,"l").replace(/æ/g,"ae").replace(/ß/g,"ss")
- .normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
-}
 export const knownPlayerNames=Array.from(new Set([
  ...allPlayers.map(p=>p.name),
  ...careers.flatMap(c=>[c.answer,...c.choices]),
@@ -40,7 +38,7 @@ export function GuessInput({id,onGuess,disabled=false,names=knownPlayerNames,lab
  },[names,text]);
  function submit(name?:string){
   if(disabled)return;
-  const match=name??names.find(n=>normalizeName(n)===normalizeName(text));
+  const match=name??names.find(n=>normalizeName(n)===normalizeName(text))??(matches.length===1?matches[0]:undefined);
   if(!match){setError("Wähle einen Spieler aus den Suchtreffern oder gib den vollständigen Namen ein.");setOpen(true);input.current?.focus();return}
   onGuess(match);setText("");setOpen(false);setFocused(0);setError("");
  }
