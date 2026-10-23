@@ -2,7 +2,7 @@ import type{Position}from"../catalog";
 
 /** Basismodell für einen späteren API-Sync. Unbekanntes bleibt null, niemals geraten. */
 export type DataStatus="historical-only"|"verified-current";
-export type SourceSystem="editorial"|"wikimedia-commons"|"api-football"|"football-data";
+export type SourceSystem="editorial"|"wikimedia-commons"|"official-club"|"api-football"|"football-data";
 export type SourceRef={system:SourceSystem;externalId?:string;url?:string;checkedAt?:string};
 export type ClubRecord={
  id:string;name:string;aliases:string[];country:string|null;
@@ -10,7 +10,7 @@ export type ClubRecord={
  crestAssetId:string|null;source:SourceRef;status:DataStatus;
 };
 export type PlayerRecord={
- id:string;name:string;country:string;position:Position;birthYear:number;
+ id:string;name:string;country:string|null;position:Position|null;birthYear:number|null;
  currentClubId:string|null;referenceClubId:string|null;
  portraitAssetId:string|null;source:SourceRef;status:DataStatus;
 };
