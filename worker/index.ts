@@ -14,7 +14,6 @@ function json(data:unknown,status=200,maxAge=120){
    "content-type":"application/json; charset=utf-8",
    "cache-control":maxAge>0?"public, max-age="+maxAge:"no-store",
    "x-content-type-options":"nosniff",
-   "access-control-allow-origin":"same-origin"
   }
  });
 }
