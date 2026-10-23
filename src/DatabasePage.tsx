@@ -2,6 +2,7 @@ import React,{useMemo,useState}from"react";
 import{ArrowRight,Check,ChevronDown,ChevronLeft,Database,ExternalLink,Image as ImageIcon,Search,Shield,UserRound}from"lucide-react";
 import{players,clubs,databaseStats,getPlayerPhoto,getClubCrest,getCareer,getHistoricalPlayers,getCurrentPlayers,getCurrentClub,getReferenceClub,type PlayerRecord,type ClubRecord,type MediaAsset}from"./db/queries";
 import{normalizeName}from"./normalize";
+import LiveSquads from"./LiveSquads";
 
 const BATCH=30;
 const leagues=Array.from(new Set(clubs.flatMap(c=>[c.historicalLeague,c.currentLeague]).filter((v):v is string=>!!v))).sort((a,b)=>a.localeCompare(b,"de"));
@@ -54,7 +55,7 @@ export default function DatabasePage(){
  function changeTab(t:"players"|"clubs"){setTab(t);setQuery("");setLeague("all");setPosition("all");setSelected(null);setLimit(BATCH)}
  const resetPage=()=>{setLimit(BATCH);setSelected(null)};
  return <><div className="game-intro"><a href="/" className="return-link"><ChevronLeft size={17}/> ZURÜCK ZUM PORTAL</a><div className="game-kicker"><span>FOOTYLAB / DATENBANK</span><span>FAKTEN STATT FANTASIE</span></div><h1>DIE DATENBANK.</h1><p>Spieler, Vereine, Karrierestationen und Bildnachweise an einem Ort. Für ausgewählte Vereine zeigen wir nun offiziell geprüfte Kader der Saison 2026/27. Bei allen anderen bleiben die älteren Vereinszuordnungen klar als historisch gekennzeichnet.</p></div>
- <section className="catalog-panel db-catalog">
+ <LiveSquads/><section className="catalog-panel db-catalog">
   <div className="db-stats">{[{value:databaseStats.playerCount,label:"SPIELER"},{value:databaseStats.clubCount,label:"VEREINE"},{value:databaseStats.careerCount,label:"KARRIEREEINTRÄGE"},{value:databaseStats.photoCount,label:"SPIELERFOTOS"}].map(item=><div key={item.label}><strong>{item.value}</strong><small>{item.label}</small></div>)}</div>
   <div className="db-verified-summary"><strong>{databaseStats.verifiedPlayers} SPIELER · {databaseStats.verifiedClubs} TEAMS AUS OFFIZIELLEN KADERLISTEN</strong><span>Stand der geprüften Quellen: 23.10.2026 · weitere Mannschaften folgen</span></div><div className="catalog-tabs db-tabs"><button onClick={()=>changeTab("players")} className={tab==="players"?"active":""} aria-pressed={tab==="players"}><UserRound size={19}/> SPIELER</button><button onClick={()=>changeTab("clubs")} className={tab==="clubs"?"active":""} aria-pressed={tab==="clubs"}><Shield size={19}/> VEREINE</button></div>
   <div className="catalog-filters"><label className="catalog-search"><Search size={21}/><input value={query} onChange={e=>{setQuery(e.target.value);resetPage()}} placeholder={tab==="players"?"Spieler, Nation oder Karriereverein suchen …":"Verein, Liga oder Land suchen …"} aria-label="Datenbank durchsuchen"/></label><select aria-label="Historische Liga auswählen" value={league} onChange={e=>{setLeague(e.target.value);resetPage()}}><option value="all">ALLE LIGEN</option>{leagues.map(l=><option key={l} value={l}>{l}</option>)}</select>{tab==="players"&&<select aria-label="Position auswählen" value={position} onChange={e=>{setPosition(e.target.value);resetPage()}}><option value="all">ALLE POSITIONEN</option>{["Tor","Abwehr","Mittelfeld","Angriff"].map(p=><option key={p}>{p}</option>)}</select>}</div>
