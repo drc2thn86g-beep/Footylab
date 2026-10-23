@@ -1,17 +1,16 @@
-import React,{useEffect,useMemo,useRef,useState}from"react";
-import{ArrowRight,Check,ChevronDown,ChevronLeft,Flame,Globe2,RotateCcw,Search,Shield,Target, Trophy, X}from"lucide-react";
-import{allClubs,allPlayers,leagueNames,playablePlayers,playerByName,type Player,type League}from"./catalog";
+import React,{useMemo,useRef,useState}from"react";
+import{ArrowRight,ChevronLeft,RotateCcw,Search,Target}from"lucide-react";
+import{allPlayers,leagueNames,playablePlayers,playerByName,type Player,type League}from"./catalog";
 import{photoUrl}from"./media";
 
 function Intro({index,kind,title,description}:{index:string;kind:string;title:string;description:string}){
  return <div className="game-intro"><a href="/#spiele" className="return-link"><ChevronLeft size={17}/> ZUR SPIELAUSWAHL</a><div className="game-kicker"><span>SPIEL {index} / 06</span><span>{kind}</span></div><h1>{title}</h1><p>{description}</p></div>
 }
-function shuffle<T>(array:readonly T[]):T[]{const a=[...array];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function normalize(s:string){return s.toLocaleLowerCase("de").replace(/ø/g,"o").replace(/ł/g,"l").replace(/æ/g,"ae").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"")}
 function dateKey(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
 function dayPlayer():Player{const key=dateKey();let hash=0x811c9dc5;for(let i=0;i<key.length;i++)hash=Math.imul(hash^key.charCodeAt(i),16777619);return playablePlayers[(hash>>>0)%playablePlayers.length]}
 function randomPlayer(exclude?:string,league:League|"all"="all"):Player{const pool=playablePlayers.filter(p=>p.name!==exclude&&(league==="all"||p.league===league));return pool[Math.floor(Math.random()*pool.length)]}
-function savedDaily(target:Player):Player[]{try{const obj=JSON.parse(localStorage.getItem("footylab-wordle-"+dateKey())||"[]");if(!Array.isArray(obj))return[];return obj.filter((n):n is string=>typeof n==="string").slice(0,8).map(n=>playerByName.get(n)).filter((p):p is Player=>!!p&&p.name!==""&&p.name!==undefined)}catch{return[]}}
+function savedDaily():Player[]{try{const obj=JSON.parse(localStorage.getItem("footylab-wordle-"+dateKey())||"[]");if(!Array.isArray(obj))return[];return obj.filter((n):n is string=>typeof n==="string").slice(0,8).map(n=>playerByName.get(n)).filter((p):p is Player=>!!p&&p.name!==""&&p.name!==undefined)}catch{return[]}}
 type Tone="exact"|"close"|"miss";
 function clue(guess:Player,target:Player){
  return{
@@ -26,7 +25,7 @@ const cols=[["nation","NATION"],["club","REFERENZVEREIN"],["league","LIGA"],["po
 const MAX=8;
 function WordleRound({mode,leagueFilter}:{mode:"daily"|"free";leagueFilter:League|"all"}){
  const[secret,setSecret]=useState<Player>(()=>mode==="daily"?dayPlayer():randomPlayer(undefined,leagueFilter));
- const[guesses,setGuesses]=useState<Player[]>(()=>mode==="daily"?savedDaily(dayPlayer()):[]);
+ const[guesses,setGuesses]=useState<Player[]>(()=>mode==="daily"?savedDaily():[]);
  const[query,setQuery]=useState("");
  const[open,setOpen]=useState(false);
  const[focused,setFocused]=useState(0);
@@ -35,7 +34,6 @@ function WordleRound({mode,leagueFilter}:{mode:"daily"|"free";leagueFilter:Leagu
  const guessed=guesses.some(g=>g.name===secret.name);
  const finished=guessed||guesses.length>=MAX;
  const hints=useMemo(()=>allPlayers.filter(p=>(mode==="daily"||leagueFilter==="all"||p.league===leagueFilter)&&!guesses.some(g=>g.name===p.name)&&normalize(p.name).includes(normalize(query))).sort((a,b)=>a.name.localeCompare(b.name,"de")).slice(0,7),[query,guesses,mode,leagueFilter]);
- const last=guesses[guesses.length-1];
  function submit(player:Player){
   if(finished||guesses.some(g=>g.name===player.name))return;
   const next=[...guesses,player];setGuesses(next);setQuery("");setOpen(false);setFocused(0);setInputError("");
@@ -60,17 +58,4 @@ export function FootballWordle(){
  const[mode,setMode]=useState<"daily"|"free">("free");
  const[leagueFilter,setLeagueFilter]=useState<League|"all">("all");
  return <><Intro index="05" kind="SPIELER-RÄTSEL" title="FOOTBALL WORDLE" description="Errate einen Fußballprofi in höchstens acht Versuchen. Nation, Karriereverein, Liga, Position und Geburtsjahr verraten dir, wie nah du dran bist."/><section className="config-panel wordle-switch"><span className="control-label">SPIELVARIANTE WÄHLEN</span><div className="category-tabs"><button className={mode==="free"?"active":""} onClick={()=>setMode("free")}>FREIES SPIEL</button><button className={mode==="daily"?"active":""} onClick={()=>setMode("daily")}>TAGESRÄTSEL</button></div>{mode==="free"&&<label className="wordle-league-filter">LIGA IM TRAINING <select value={leagueFilter} onChange={e=>setLeagueFilter(e.target.value as League|"all")}><option value="all">ALLE 5 LIGEN</option>{leagueNames.map(name=><option key={name} value={name}>{name}</option>)}</select></label>}<p>Im Tagesrätsel bekommen alle am selben lokalen Kalendertag denselben Spieler. Dein Tippverlauf wird auf diesem Gerät gespeichert.</p></section><WordleRound key={mode+"-"+leagueFilter} mode={mode} leagueFilter={mode==="daily"?"all":leagueFilter}/></>
-}
-export function ClubCompass(){
- const[deck,setDeck]=useState(()=>shuffle(allClubs).slice(0,12));
- const[index,setIndex]=useState(0);
- const[answer,setAnswer]=useState<League|null>(null);
- const[score,setScore]=useState(0);
- const done=index>=deck.length;
- const club=deck[index];
- useEffect(()=>{if(!answer)return;const t=window.setTimeout(()=>{setIndex(i=>i+1);setAnswer(null)},1300);return()=>clearTimeout(t)},[answer]);
- function select(choice:League){if(answer)return;setAnswer(choice);if(choice===club.league)setScore(v=>v+1)}
- function restart(){setDeck(shuffle(allClubs).slice(0,12));setIndex(0);setAnswer(null);setScore(0)}
- return <><Intro index="06" kind="VEREINS-RÄTSEL" title="KLUBKOMPASS" description="Kennst du die Liga der Vereine? Zwölf Clubs aus fünf europäischen Ligen – eine schnelle Runde ohne Nachklicken."/><section className="play-shell club-quiz">{done?<div className="end-screen"><span className="eyebrow">SCHLUSSPFIFF</span><strong className="end-score">{score}/12</strong><h2>ALLE KLUBS GESPIELT</h2><p>Wie viele Vereine hast du richtig zugeordnet?</p><button className="btn-solid" onClick={restart}><RotateCcw size={18}/> NEUE RUNDE</button></div>:<><div className="play-top"><div><span className="eyebrow">KLUBKOMPASS / {String(index+1).padStart(2,"0")} VON 12</span><h2>WO GEHÖRT DIESER VEREIN HIN?</h2></div><div className="score-box"><div><small>PUNKTE</small><strong>{score}</strong></div></div></div><div className="club-question"><div className="club-logo-placeholder"><Shield size={60}/></div><strong>{club.name}</strong><span>WELCHER LIGA WIRD DIESER KLUB ZUGEORDNET?</span></div><div className="club-choices">{leagueNames.map((league,i)=><button key={league} disabled={answer!==null} className={answer!==null?(league===club.league?"picked-correct":league===answer?"picked-wrong":""):""} onClick={()=>select(league)}><span>{String(i+1).padStart(2,"0")}</span>{league}{answer!==null&&league===club.league?<Check size={21}/>:answer===league?<X size={21}/>:<ArrowRight size={18}/>}</button>)}</div>{answer!==null&&<div className={"short-feedback "+(answer===club.league?"success":"failure")} role="status"><strong>{answer===club.league?"RICHTIG!":"NICHT GANZ!"} {club.league.toUpperCase()}</strong><span>Der nächste Verein erscheint automatisch.</span></div>}</>}
- <p className="source-note">Vereinsbasis: {allClubs.length} Clubs. Zuordnung zur bekannten historischen Heimatliga, nicht zwingend zur aktuellen Saison oder Spielklasse.</p></section></>;
 }
