@@ -1,4 +1,4 @@
-import{imageId,playerId}from"./ids.ts";
+import{imageId,playerId,clubId}from"./ids.ts";
 import type{MediaAsset}from"./types";
 
 /** Nur Fotos mit dokumentierter Commons-Datei, Urheber und Lizenz aufnehmen.
@@ -21,7 +21,13 @@ function commonsUrl(file:string){return"https://commons.wikimedia.org/wiki/Speci
 function commonsPage(file:string){return"https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(file.replace(/ /g,"_"))}
 export const photoUrl=(name:string):string|undefined=>photos[name]?commonsUrl(photos[name].file):undefined;
 export const photoPage=(name:string):string|undefined=>photos[name]?commonsPage(photos[name].file):undefined;
-export const mediaAssets:MediaAsset[]=Object.entries(photos).map(([name,p])=>({
+export const crests:Record<string,Photo>={
+ "Borussia Dortmund":{file:"Borussia Dortmund logo.svg",author:"Lispir / Borussia Dortmund",license:"Gemeinfrei (PD-textlogo); Markenrechte vorbehalten",licenseUrl:"https://commons.wikimedia.org/wiki/Template:PD-textlogo"},
+ "Bayern München":{file:"FC Bayern München logo (2024).svg",author:"FC Bayern München",license:"Gemeinfrei (PD-textlogo); Markenrechte vorbehalten",licenseUrl:"https://commons.wikimedia.org/wiki/Template:PD-textlogo"}
+};
+export const crestUrl=(name:string):string|undefined=>crests[name]?commonsUrl(crests[name].file):undefined;
+export const crestPage=(name:string):string|undefined=>crests[name]?commonsPage(crests[name].file):undefined;
+const portraitAssets:MediaAsset[]=Object.entries(photos).map(([name,p])=>({
  id:imageId("player",name),
  entityType:"player",entityId:playerId(name),kind:"portrait",
  url:commonsUrl(p.file),sourcePage:commonsPage(p.file),
@@ -29,3 +35,11 @@ export const mediaAssets:MediaAsset[]=Object.entries(photos).map(([name,p])=>({
  changed:p.changed??false,
  source:{system:"wikimedia-commons",url:commonsPage(p.file)}
 }));
+
+const crestAssets:MediaAsset[]=Object.entries(crests).map(([name,p])=>({
+ id:imageId("club",name),entityType:"club",entityId:clubId(name),kind:"crest",
+ url:commonsUrl(p.file),sourcePage:commonsPage(p.file),
+ author:p.author,license:p.license,licenseUrl:p.licenseUrl,
+ changed:false,source:{system:"wikimedia-commons",url:commonsPage(p.file)}
+}));
+export const mediaAssets:MediaAsset[]=[...portraitAssets,...crestAssets];
