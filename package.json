@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "check:data": "node --experimental-strip-types scripts/check-data.mjs",
-    "check:db": "node --experimental-strip-types scripts/check-db.mjs"
+    "check:db": "node --experimental-strip-types scripts/check-db.mjs",
+    "db:export": "node --experimental-strip-types scripts/export-db.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
