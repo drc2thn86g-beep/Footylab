@@ -1,7 +1,7 @@
 import React,{useEffect,useState}from"react";
 import{ArrowDown,ArrowRight,ArrowUp,Check,ChevronLeft,Flame,Info,RotateCcw,Shield,UserRound,X}from"lucide-react";
 import{datasets,type Category,type Dataset,type Entry}from"./data";
-import{photoUrl}from"./media";
+import{photoUrl,crestUrl}from"./media";
 
 type Mode="ten"|"endless";
 type Difficulty="mixed"|"easy"|"hard";
@@ -21,11 +21,11 @@ function nextPair(data:Dataset,difficulty:Difficulty,previous?:Pair):Pair{
 function getBest(key:string){try{return Number(window.localStorage.getItem(key)||0)}catch{return 0}}
 function setBestValue(key:string,value:number){try{window.localStorage.setItem(key,String(value))}catch{/* local storage optional */}}
 function Picture({name,club=false}:{name:string;club?:boolean}){
- const image=club?undefined:photoUrl(name);
+ const image=club?crestUrl(name):photoUrl(name);
  const[failed,setFailed]=useState(false);
  const letters=name.replace(/^FC\s+/,"").split(/\s+/).slice(0,2).map(s=>s[0]).join("").toUpperCase();
  return <div className={"portrait "+(club?"portrait-club":"portrait-player")}>
-  {image&&!failed?<img src={image} alt={"Foto von "+name} loading="lazy" referrerPolicy="no-referrer" onError={()=>setFailed(true)}/>:<div className="portrait-fallback" aria-hidden="true">{club?<Shield size={45} strokeWidth={1.3}/>:<UserRound size={47} strokeWidth={1.3}/>}<strong>{letters}</strong></div>}
+  {image&&!failed?<img src={image} alt={(club?"Vereinswappen von ":"Foto von ")+name} loading="lazy" referrerPolicy="no-referrer" onError={()=>setFailed(true)}/>:<div className="portrait-fallback" aria-hidden="true">{club?<Shield size={45} strokeWidth={1.3}/>:<UserRound size={47} strokeWidth={1.3}/>}<strong>{letters}</strong></div>}
  </div>;
 }
 function Intro({id,type,title,description}:{id:string;type:string;title:string;description:string}){return <div className="game-intro"><a href="/#spiele" className="return-link"><ChevronLeft size={17}/> ZUR SPIELAUSWAHL</a><div className="game-kicker"><span>SPIEL {id} / 06</span><span>{type}</span></div><h1>{title}</h1><p>{description}</p></div>}
