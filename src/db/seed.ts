@@ -9,6 +9,7 @@ import type{ClubRecord,PlayerRecord,CareerRecord,SourceRef}from"./types.ts";
  * Wichtig: Dieser Katalog ist ausdrücklich historisch, kein verifizierter Live-Kader. */
 const editorial:SourceRef={system:"editorial"};
 const byClubId=new Map<string,ClubRecord>();
+const crestIds=new Map(mediaAssets.filter(a=>a.kind==="crest").map(a=>[a.entityId,a.id]));
 const aliases:Record<string,string>={
  "Barcelona":"FC Barcelona","Liverpool":"FC Liverpool","Tottenham":"Tottenham Hotspur",
  "Juventus":"Juventus Turin","Inter":"Inter Mailand","AC Milan":"AC Mailand",
@@ -32,7 +33,7 @@ function registerClub(name:string,league:string|null=null,country:string|null=nu
  const club:ClubRecord={
   id,name:clean,aliases:clean===name?[]:[name],
   country,historicalLeague:league,currentLeague:null,
-  crestAssetId:null,source:editorial,status:"historical-only"
+  crestAssetId:crestIds.get(id)??null,source:editorial,status:"historical-only"
  };
  byClubId.set(id,club);
  return club;
