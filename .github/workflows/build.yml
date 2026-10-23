@@ -24,5 +24,9 @@ jobs:
           test -s data/exports/clubs.json
           test -s data/exports/career-history.json
           test -s data/exports/media.json
+      - name: Test protected football API without credentials
+        run: npm run check:api
       - name: Compile and build
         run: npm run build
+      - name: Verify Cloudflare worker bundle
+        run: npx wrangler deploy --dry-run
