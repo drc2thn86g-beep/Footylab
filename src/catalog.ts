@@ -103,6 +103,13 @@ const clubEntries:Record<League,string[]>={
  "Ligue 1":["Paris Saint-Germain","Olympique Marseille","AS Monaco","OSC Lille","Olympique Lyon","OGC Nizza","Stade Rennes","RC Lens","RC Strasbourg","FC Toulouse","FC Nantes","Stade Brest","Stade Reims","Montpellier HSC","AJ Auxerre","Angers SCO","FC Lorient","Le Havre AC","FC Metz","AS Saint-Étienne","Girondins Bordeaux"]
 };
 export const allClubs:Club[]=(Object.keys(clubEntries) as League[]).flatMap(league=>clubEntries[league].map(name=>({name,league,country:leagueCountries[league]})));
+/** Historische Stationen aus den redaktionellen Spieler-Einträgen (nicht nur der zuletzt hinterlegte Verein). */
+export const playerClubHistory:Map<string,string[]>=new Map();
+for(const person of players){
+ const clubs=playerClubHistory.get(person.name)??[];
+ if(!clubs.includes(person.club))clubs.push(person.club);
+ playerClubHistory.set(person.name,clubs);
+}
 export const allPlayers:Player[]=Array.from(new Map(players.map(p=>[p.name,p])).values());
 export const playablePlayers:Player[]=allPlayers.filter(p=>p.birthYear>=1975);
 export const playerByName=new Map(allPlayers.map(p=>[p.name,p]));
