@@ -14,7 +14,7 @@ Kostenloses Fußball-Minigame-Portal im Browser mit eigenständigem Print-/Sport
 | `/games/career-path` | Career Path | 43 Spielerkarrieren, 10 Fragen pro Runde; Klassisch (vier Antworten) oder Experte (freien Spielernamen eintippen); automatische Fragenfolge; Experte ohne unklare Ein-Verein-Rätsel |
 | `/games/football-grid` | Football Grid | 3 Matrizen, Klassisch mit vier Antworten oder Experte mit freier Namenseingabe; 118 dokumentierte mögliche richtige Spieler-Feld-Kombinationen statt nur einer Musterlösung |
 | `/games/wer-bin-ich` | Wer bin ich? | 31 Spieler mit vier Hinweisen, acht Fragen; Entspannt mit zwei Hinweisen, Klassisch mit vier Antworten, Profi mit freier Eingabe und doppelten Punkten; Hinweis- und Auflösen-Tasten |
-| `/games/football-wordle` | Football Wordle | Spieler in acht Versuchen erraten; Freies Spiel und lokales Tagesrätsel; Hinweise zu Nation, Karriereverein, Liga, Position, Geburtsjahr (↑ jünger / ↓ älter), Autocomplete und gespeicherte Tages-Tipps |
+| `/games/football-wordle` | Football Wordle | 88 Spieler aus den offiziell geprüften 2026/27-Kadern mit vollständig genug gepflegten Profilen, Freies Spiel / Tagesrätsel, Nation, aktuelle Liga und Verein, Position und Geburtsjahr |
 | `/games/klubkompass` | Klubkompass | 251 internationale Klubs aus 21 historischen Heimatligen abseits der Top-5, Europa- oder Weltweit-Modus, 4 oder 6 Ligaoptionen, 12 Fragen ohne Liga-Wiederholung pro Runde, automatischer Wechsel |
 | `/datenbank` | Datenbank | Suchbare Spieler- und Vereinsübersicht mit Liga- und Positionsfiltern |
 | `/bildnachweise` | Bildnachweise | Lizenz, Urheber und Commons-Dateilink vorhandener Spielerbilder |
@@ -33,11 +33,11 @@ Karriere-Fragen, die drei Matrizen und Wer-bin-ich-Hinweise stehen in `src/gameD
 
 Die Website nutzt eine zentrale, quellbewusste Datenbankschicht. Bei der Migration aus den bisherigen Listen gehen keine Spieler verloren:
 
-- **398 Spieler** mit stabilen IDs, Geburtsjahr, Land, Position und eindeutiger Referenz.
+- **571 Spielerprofile** – 398 ältere redaktionelle Einträge plus neue Spieler aus offiziellen Mannschaftslisten. Unbekanntes Geburtsjahr / Nationalität bleibt bei neuen Profilen `null`.
 - **379 Vereine** aus den Top-5-Ligen, internationalen Ligen und historischen Karrieren.
 - **556 Karriereverknüpfungen**. Echte Reihenfolgen aus Career Path werden als chronologisch markiert; weitere bekannte Vereinsstationen werden **ohne erfundene Reihenfolge** gespeichert.
 - **13 dokumentierte Spielerfotos** und **2 ausgewählte Vereinswappen**. Wo ein Bild fehlt, bleibt der eigene Fallback.
-- **Keine erfundenen Live-Daten:** `currentClubId` und `currentLeague` stehen auf `null`, bis eine zuverlässige Quelle diese Felder bestätigt.
+- **261 aktuelle Kader-Zuordnungen aus 10 offiziellen Vereinsquellen (Stand 23.10.2026)** setzen `currentClubId` / `currentLeague` mit Quellenlink und Datum. Für andere Spieler und Klubs bleiben diese Felder `null`; historische Referenzen werden nicht als aktuelle Vertragszugehörigkeit ausgegeben.
 
 Dateien:
 - `src/db/types.ts` – zentrale Typen für Spieler, Vereine, Karriereeinträge, Medien und Datenherkunft
@@ -55,7 +55,28 @@ npm run db:export
 
 Exporte liegen lokal unter `data/exports/` (nicht versioniert). Die Seite `/datenbank` zeigt jetzt aufklappbare Spielerprofile und historische Vereinsstationen bzw. bekannte Spieler eines Vereins. **Football Wordle und Football Grid** nutzen die zentrale Datenbankschicht statt eigener unverbundener Listen; Higher or Lower verwendet die gleiche Bildverwaltung.
 
-**Grenzen:** Die Daten stammen weiterhin größtenteils aus dem redaktionellen bisherigen FootyLab-Katalog. Ein API-Abgleich der aktuellen Saison 2026/27 wurde noch nicht aktiviert. Vor produktivem Echtzeitbetrieb sind Anbieterzugriff, Lizenzbedingungen, Server-Caching und Quellenabgleich erforderlich.
+**Grenzen:** Diese 10 Kader wurden als Momentaufnahme von offiziellen Vereinsseiten übernommen, nicht per API oder täglicher Synchronisation. Noch längst nicht jeder Klub der Top-5-Ligen wurde geprüft. Neue Spieler können fehlende Profildaten besitzen; bei Wordle werden sie erst nach ausreichender Pflege zugelassen. Nach Transferfenstern müssen die Quellen erneut überprüft werden.
+
+## Offizielle Kader-Momentaufnahmen 2026/27 (23. Oktober 2026)
+
+Für die folgende **erste Auswahl von zehn Mannschaften** wurden die Kaderdaten aus Vereinswebsites und offiziellen 2026/27-Meldungen übernommen. Das ist keine kostenpflichtige API, sondern ein **dokumentierter Abgleich gegen öffentlich zugängliche Originalquellen**:
+
+| Liga | Verein | Quelle |
+| --- | --- | --- |
+| Bundesliga | Bayern München | [Profikader](https://fcbayern.com/de/teams/profis) |
+| Bundesliga | Borussia Dortmund | [UEFA-Saisonkader](https://www.bvb.de/de/de/aktuelles/news/news.html/2026/9/4/Das-ist-der-Kader-fuer-die-Champions-League-Saison-2026-27.html) |
+| La Liga | FC Barcelona | [Profikader](https://www.fcbarcelona.com/en/football/first-team/players) |
+| La Liga | Real Madrid | [Offizielle Rückennummern 2026/27](https://www.realmadrid.com/en-US/news/football/first-team/latest-news/dorsales-del-real-madrid-para-la-temporada-2026-27-10-08-2026) |
+| Premier League | Manchester City | [Teamseite](https://www.mancity.com/players) |
+| Serie A | Inter Mailand | [Profikader](https://www.inter.it/en/teams/first-team) |
+| Serie A | AC Mailand | [Profikader](https://www.acmilan.com/en/teams/men-first-team) |
+| Serie A | Juventus Turin | [Profikader](https://www.juventus.com/en/teams/first-team-men/squad/) |
+| Ligue 1 | Paris Saint-Germain | [Profikader](https://www.psg.fr/en/mens-football/squad) |
+| Ligue 1 | AS Monaco | [Profikader](https://www.asmonaco.com/en/pros/players) |
+
+Die Daten liegen in `src/db/currentSquads.ts` mit Saison, offiziellen URLs, Positionen (wo aus der Quelle bekannt) und `checkedAt`. Das Datenmodell verbindet die aktuelle Mannschaft eines Spielers, ohne ältere Karrierewege zu überschreiben. Quellseiten können sich nach dem Prüfdatum ändern, insbesondere wenn Spieler den Verein verlassen.
+
+`npm run check:db` prüft, dass jeder aktuelle Eintrag eine Quelle hat, keine doppelten aktiven Vereinszuordnungen existieren und Wordle nur vollständig genug gepflegte Profile mit aktuellem Verein verwendet.
 
 ## Bilder und Lizenzen
 
@@ -102,4 +123,4 @@ Die sechs Spiele und die Datenbank werden über React.lazy und dynamische Import
 - Wer bin ich? hat drei Schwierigkeitsgrade, einen sichtbaren Hinweise-Schalter, Punktkosten pro Hinweis sowie eine Auflösen-Funktion.
 - Klubkompass enthält keine Top-5-Ligen mehr und bietet eine Europa-/Weltweit-Edition mit jeweils 4 bzw. 6 Antwortmöglichkeiten.
 
-**Noch nicht umgesetzt:** Ein zuverlässiger automatischer API-Sync für die aktuellen Kader 2026/27 und eine lizenzierte Vollabdeckung der Spielerbilder. Historische Quizdaten bleiben ausdrücklich getrennt von zukünftigen aktuellen Spielerprofilen. Keine API-Credentials im Browser oder Repository speichern.
+**Noch nicht umgesetzt:** Eine vollautomatische, regelmäßig aktualisierte Kaderübernahme aller Top-5-Ligen oder eine lizenzierte Vollabdeckung der Spielerbilder. Die bisherigen zehn Clubkader stammen aus offiziellen Quellen; historische Quizdaten bleiben separat. Keine API-Schlüssel im Browser oder Repository.
