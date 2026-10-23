@@ -1,14 +1,12 @@
-import React,{useEffect,useMemo,useState}from"react";
-import{ArrowDown,ArrowLeft,ArrowRight,ArrowUp,Check,ChevronLeft,Eye,Flame,Grid3X3,Info,RotateCcw,Shield,UserRound,X}from"lucide-react";
+import React,{useEffect,useState}from"react";
+import{ArrowDown,ArrowRight,ArrowUp,Check,ChevronLeft,Flame,Info,RotateCcw,Shield,UserRound,X}from"lucide-react";
 import{datasets,type Category,type Dataset,type Entry}from"./data";
-import{careers,gridBoards,mysteries}from"./gameData";
 import{photoUrl}from"./media";
 
 type Mode="ten"|"endless";
 type Difficulty="mixed"|"easy"|"hard";
 type Pair={a:Entry;b:Entry};
 const random=<T,>(arr:T[]):T=>arr[Math.floor(Math.random()*arr.length)];
-const shuffle=<T,>(arr:readonly T[]):T[]=>{const copy=[...arr];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy};
 function nextPair(data:Dataset,difficulty:Difficulty,previous?:Pair):Pair{
  const a=previous?.b??random(data.entries);
  let valid=data.entries.filter(b=>b.name!==a.name&&b.value!==a.value);
@@ -81,50 +79,5 @@ export function HigherLower(){
  <div className="comparison" aria-live="polite"><div className="compare-card known" key={"left-"+pair.a.name}><div className="card-number">01 / REFERENZ</div><Picture key={pair.a.name} name={pair.a.name} club={isClub}/><h3>{pair.a.name}</h3><strong>{pair.a.value}</strong><span>{dataset.unit}</span></div><div className="versus">VS</div><div className={"compare-card unknown "+(choice!==null?(isCorrect?"answered-right":"answered-wrong"):"")} key={"right-"+pair.b.name}><div className="card-number">02 / DEINE WAHL</div><Picture key={pair.b.name} name={pair.b.name} club={isClub}/><h3>{pair.b.name}</h3><strong className={choice===null?"unknown-value":""}>{choice===null?"?":pair.b.value}</strong><span>{dataset.unit}</span></div></div>
  <div className="answer-area">{choice===null?<><div className="answer-prompt">{dataset.id==="birth-year"?"WURDE "+pair.b.name.toUpperCase()+" SPÄTER ODER FRÜHER GEBOREN?":<>HAT <strong>{pair.b.name.toUpperCase()}</strong> MEHR ODER WENIGER?</>}</div><div className="vote-row"><button onClick={()=>guess("higher")} className="vote-higher"><ArrowUp size={24}/> {dataset.id==="birth-year"?"SPÄTER":"HÖHER"} <kbd>↑</kbd></button><button onClick={()=>guess("lower")} className="vote-lower"><ArrowDown size={24}/> {dataset.id==="birth-year"?"FRÜHER":"NIEDRIGER"} <kbd>↓</kbd></button></div></>:<div className={"answer-feedback "+(isCorrect?"right":"wrong")} role="status"><div>{isCorrect?<Check size={26}/>:<X size={26}/>}<strong>{isCorrect?"RICHTIG!":"DANEBEN!"}</strong></div><span>{mode==="endless"&&!isCorrect||mode==="ten"&&round===10?"GLEICH KOMMT DEIN ERGEBNIS":"NÄCHSTER VERGLEICH STARTET AUTOMATISCH ..."}</span><div className="auto-meter" key={round}/></div>}</div>
  <div className="play-foot"><span><Info size={14}/> Datenstand: {dataset.stand}</span><a href={dataset.source} target="_blank" rel="noreferrer">QUELLE <ArrowRight size={14}/></a></div>
- </>}</section></>;
-}
-export function CareerPath(){
- const[deck,setDeck]=useState(()=>shuffle(careers).slice(0,10));
- const[index,setIndex]=useState(0);const[answer,setAnswer]=useState<string|null>(null);const[score,setScore]=useState(0);
- const done=index>=deck.length;const question=deck[index];const options=useMemo(()=>question?shuffle(question.choices):[],[question]);
- useEffect(()=>{if(answer===null)return;const t=window.setTimeout(()=>{setIndex(v=>v+1);setAnswer(null)},1750);return()=>window.clearTimeout(t)},[answer]);
- function choose(name:string){if(answer!==null)return;setAnswer(name);if(name===question.answer)setScore(s=>s+1)}
- function restart(){setDeck(shuffle(careers).slice(0,10));setIndex(0);setAnswer(null);setScore(0)}
- return <><Intro id="02" type="KARRIERE" title="CAREER PATH" description="Die Vereine erzählen die Geschichte. Errate den Spieler, bevor der Schlusspfiff ertönt – zehn Karrieren pro Runde."/><section className="play-shell">{done?<Summary title="KARRIERE-CHECK BEENDET" points={score} total={deck.length} onAgain={restart}/>:<>
- <div className="play-top"><div><span className="eyebrow">WESSEN LAUFBAHN IST DAS?</span><h2>WER BIN ICH?</h2></div><ScoreBox score={score} round={index+1} total={deck.length}/></div>
- <div className="round-track"><div className="round-fill" style={{width:((index+1)/deck.length*100)+"%"}}/></div>
- <div className="career-timeline">{question.clubs.map((club,i)=><React.Fragment key={i}>{i>0&&<ArrowRight size={17} className="path-arrow"/>}<div className="club-stop"><span>{String(i+1).padStart(2,"0")}</span><Shield size={19}/><b>{club}</b></div></React.Fragment>)}</div>
- <span className="control-label">WELCHER SPIELER HAT DIESE STATIONEN?</span>
- <div className="choice-grid">{options.map((name,i)=><button disabled={answer!==null} className={"choice-button "+(answer!==null?(name===question.answer?"correct-option":answer===name?"wrong-option":"dim-option"):"")} key={name} onClick={()=>choose(name)}><span>{String.fromCharCode(65+i)}</span>{name}{answer!==null&&name===question.answer?<Check size={20}/>:answer===name?<X size={20}/>:<ArrowRight size={17}/>}</button>)}</div>
- {answer!==null&&<div className={"short-feedback "+(answer===question.answer?"success":"failure")} role="status"><strong>{answer===question.answer?"RICHTIG":"LEIDER FALSCH"} – {question.answer}</strong><span>{question.fact} · Nächste Karriere automatisch.</span></div>}
- </>}</section></>;
-}
-export function FootballGrid(){
- const[boardId,setBoardId]=useState(gridBoards[0].id);const[answers,setAnswers]=useState<Record<number,string>>({});const[active,setActive]=useState<number|null>(null);
- const board=gridBoards.find(b=>b.id===boardId)??gridBoards[0];
- const answered=Object.keys(answers).length;const score=Object.entries(answers).filter(([i,v])=>board.cells[Number(i)].answer===v).length;
- const current=active===null?null:board.cells[active];
- const options=useMemo(()=>current?shuffle(current.choices):[],[current]);
- const done=answered===9;
- function boardChange(id:string){setBoardId(id);setAnswers({});setActive(null)}
- function nextBoard(){const n=(gridBoards.findIndex(b=>b.id===board.id)+1)%gridBoards.length;boardChange(gridBoards[n].id)}
- return <><Intro id="03" type="WISSEN" title="FOOTBALL GRID" description="Drei Vereine treffen auf drei Länder. Finde den Fußballer, der beide Bedingungen erfüllt. Jedes Feld zählt."/><section className="config-panel board-switch"><span className="control-label">SPIELFELD WÄHLEN</span><div className="board-options">{gridBoards.map((b,i)=><button key={b.id} className={boardId===b.id?"active":""} onClick={()=>boardChange(b.id)}>GRID {String(i+1).padStart(2,"0")}</button>)}</div><span className="board-name">{board.label}</span></section><section className="play-shell"><div className="play-top"><div><span className="eyebrow">KREUZWISSEN / 3 × 3</span><h2>ALLE NEUN FELDER</h2></div><ScoreBox score={score} round={answered} total={9}/></div><div className="football-grid"><div className="grid-corner"><Grid3X3 size={22}/></div>{board.columns.map(col=><div key={col} className="grid-col-head">{col}</div>)}{board.rows.map((row,i)=><React.Fragment key={row}><div className="grid-row-head">{row}</div>{board.columns.map((col,j)=>{const idx=i*3+j;const choice=answers[idx];const correct=choice!==undefined&&choice===board.cells[idx].answer;return <button aria-label={row+" und "+col} key={col} className={"grid-tile "+(idx===active?"grid-active ":"")+(choice!==undefined?(correct?"grid-done":"grid-fail"):"")} onClick={()=>setActive(idx)}>{choice===undefined?<span>+</span>:<><span>{correct?<Check size={20}/>:<X size={20}/>}</span><small>{choice}</small></>}</button>})}</React.Fragment>)}</div>
- {done?<div className="end-note"><strong>{score} / 9 FELDER GELÖST</strong><p>Anderes Team, neues Grid? Hier warten weitere Kombinationen.</p><button className="btn-solid" onClick={nextBoard}><RotateCcw size={18}/> NÄCHSTES GRID</button></div>:<div className="grid-question-panel">{active===null?<p>Wähle ein freies Kästchen, um deine Antwortmöglichkeiten zu sehen.</p>:<><span className="eyebrow">{board.rows[Math.floor(active/3)]} + {board.columns[active%3]}</span>{answers[active]===undefined?<><h3>WER PASST IN DIESES FELD?</h3><div className="choice-grid">{options.map((name,i)=><button className="choice-button" key={name} onClick={()=>setAnswers(prev=>({...prev,[active]:name}))}><span>{String.fromCharCode(65+i)}</span>{name}<ArrowRight size={16}/></button>)}</div></>:<div className="grid-solution"><strong>{answers[active]===current?.answer?"RICHTIG!":"LEIDER NICHT."}</strong><p>Gesucht: {current?.answer}. Wähle jetzt ein weiteres Kästchen.</p></div>}</>}</div>}
- <p className="source-note">Redaktionell zusammengestellte Karrieredaten. In dieser Version hat jedes Feld eine Auswahl aus vier Antworten.</p></section></>;
-}
-export function WhoAmI(){
- const[deck,setDeck]=useState(()=>shuffle(mysteries).slice(0,8));
- const[index,setIndex]=useState(0);const[hint,setHint]=useState(0);const[answer,setAnswer]=useState<string|null>(null);const[score,setScore]=useState(0);
- const done=index>=deck.length;const question=deck[index];const options=useMemo(()=>question?shuffle(question.choices):[],[question]);
- useEffect(()=>{if(answer===null)return;const t=window.setTimeout(()=>{setIndex(i=>i+1);setHint(0);setAnswer(null)},1750);return()=>window.clearTimeout(t)},[answer]);
- function choose(name:string){if(answer!==null)return;setAnswer(name);if(name===question.answer)setScore(v=>v+4-hint)}
- function restart(){setDeck(shuffle(mysteries).slice(0,8));setIndex(0);setHint(0);setAnswer(null);setScore(0)}
- return <><Intro id="04" type="RÄTSEL" title="WER BIN ICH?" description="Erkenne eine Fußballlegende anhand von Hinweisen. Wer früher richtig liegt, kassiert mehr Punkte."/><section className="play-shell">{done?<Summary title="DU HAST ABGELIEFERT" points={score} total={32} onAgain={restart}/>:<>
- <div className="play-top"><div><span className="eyebrow">MYSTERY PLAYER / {index+1} VON {deck.length}</span><h2>WEM GEHÖREN DIESE FAKTEN?</h2></div><ScoreBox score={score} round={index+1} total={8}/></div>
- <div className="round-track"><div className="round-fill" style={{width:((index+1)/deck.length*100)+"%"}}/></div>
- <div className="mystery-board"><div className="mystery-icon"><Eye size={39}/><span>?</span></div><div className="mystery-clues">{question.clues.slice(0,hint+1).map((clue,i)=><div key={i} className="clue"><span>HINWEIS {String(i+1).padStart(2,"0")}</span><p>{clue}</p></div>)}</div></div>
- <div className="hint-bar"><span>WERT DIESER FRAGE: <strong>{4-hint} PUNKTE</strong></span>{hint<3&&answer===null?<button onClick={()=>setHint(v=>v+1)}><Eye size={17}/> NÄCHSTER HINWEIS (−1 PKT)</button>:<span>{hint===3?"ALLE HINWEISE SICHTBAR":""}</span>}</div>
- <span className="control-label">DEIN TIPP</span><div className="choice-grid">{options.map((name,i)=><button key={name} disabled={answer!==null} onClick={()=>choose(name)} className={"choice-button "+(answer!==null?(name===question.answer?"correct-option":answer===name?"wrong-option":"dim-option"):"")}><span>{String.fromCharCode(65+i)}</span>{name}{answer!==null&&name===question.answer?<Check size={20}/>:answer===name?<X size={20}/>:<ArrowRight size={17}/>}</button>)}</div>
- {answer!==null&&<div className={"short-feedback "+(answer===question.answer?"success":"failure")} role="status"><strong>{answer===question.answer?"GEWUSST! +"+(4-hint)+" PUNKTE":"DAS WAR "+question.answer.toUpperCase()}</strong><span>Nächster Spieler erscheint automatisch.</span></div>}
  </>}</section></>;
 }
