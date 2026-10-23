@@ -7,10 +7,10 @@ function Intro({index,kind,title,description}:{index:string;kind:string;title:st
  return <div className="game-intro"><a href="/#spiele" className="return-link"><ChevronLeft size={17}/> ZUR SPIELAUSWAHL</a><div className="game-kicker"><span>SPIEL {index} / 06</span><span>{kind}</span></div><h1>{title}</h1><p>{description}</p></div>
 }
 function shuffle<T>(array:readonly T[]):T[]{const a=[...array];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function normalize(s:string){return s.toLocaleLowerCase("de").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"")}
+function normalize(s:string){return s.toLocaleLowerCase("de").replace(/ø/g,"o").replace(/ł/g,"l").replace(/æ/g,"ae").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"")}
 function dateKey(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
 function dayPlayer():Player{const key=dateKey();let hash=0x811c9dc5;for(let i=0;i<key.length;i++)hash=Math.imul(hash^key.charCodeAt(i),16777619);return playablePlayers[(hash>>>0)%playablePlayers.length]}
-function randomPlayer(exclude?:string):Player{const pool=playablePlayers.filter(p=>p.name!==exclude);return pool[Math.floor(Math.random()*pool.length)]}
+function randomPlayer(exclude?:string,league:League|"all"="all"):Player{const pool=playablePlayers.filter(p=>p.name!==exclude&&(league==="all"||p.league===league));return pool[Math.floor(Math.random()*pool.length)]}
 function savedDaily(target:Player):Player[]{try{const obj=JSON.parse(localStorage.getItem("footylab-wordle-"+dateKey())||"[]");if(!Array.isArray(obj))return[];return obj.filter((n):n is string=>typeof n==="string").slice(0,8).map(n=>playerByName.get(n)).filter((p):p is Player=>!!p&&p.name!==""&&p.name!==undefined)}catch{return[]}}
 type Tone="exact"|"close"|"miss";
 function clue(guess:Player,target:Player){
@@ -24,8 +24,8 @@ function clue(guess:Player,target:Player){
 }
 const cols=[["nation","NATION"],["club","REFERENZVEREIN"],["league","LIGA"],["position","POSITION"],["year","JAHRGANG"]] as const;
 const MAX=8;
-function WordleRound({mode}:{mode:"daily"|"free"}){
- const[secret,setSecret]=useState<Player>(()=>mode==="daily"?dayPlayer():randomPlayer());
+function WordleRound({mode,leagueFilter}:{mode:"daily"|"free";leagueFilter:League|"all"}){
+ const[secret,setSecret]=useState<Player>(()=>mode==="daily"?dayPlayer():randomPlayer(undefined,leagueFilter));
  const[guesses,setGuesses]=useState<Player[]>(()=>mode==="daily"?savedDaily(dayPlayer()):[]);
  const[query,setQuery]=useState("");
  const[open,setOpen]=useState(false);
@@ -34,7 +34,7 @@ function WordleRound({mode}:{mode:"daily"|"free"}){
  const input=useRef<HTMLInputElement>(null);
  const guessed=guesses.some(g=>g.name===secret.name);
  const finished=guessed||guesses.length>=MAX;
- const hints=useMemo(()=>allPlayers.filter(p=>!guesses.some(g=>g.name===p.name)&&normalize(p.name).includes(normalize(query))).sort((a,b)=>a.name.localeCompare(b.name,"de")).slice(0,7),[query,guesses]);
+ const hints=useMemo(()=>allPlayers.filter(p=>(mode==="daily"||leagueFilter==="all"||p.league===leagueFilter)&&!guesses.some(g=>g.name===p.name)&&normalize(p.name).includes(normalize(query))).sort((a,b)=>a.name.localeCompare(b.name,"de")).slice(0,7),[query,guesses,mode,leagueFilter]);
  const last=guesses[guesses.length-1];
  function submit(player:Player){
   if(finished||guesses.some(g=>g.name===player.name))return;
@@ -42,7 +42,7 @@ function WordleRound({mode}:{mode:"daily"|"free"}){
   if(mode==="daily"){try{localStorage.setItem("footylab-wordle-"+dateKey(),JSON.stringify(next.map(p=>p.name)))}catch{/* Safari private mode */}}
  }
  function submitText(){const match=allPlayers.find(p=>normalize(p.name)===normalize(query));if(match){submit(match);return}if(hints.length===1){submit(hints[0]);return}setInputError("Wähle einen Spieler aus der Liste.");setOpen(true)}
- function fresh(){setSecret(current=>randomPlayer(current.name));setGuesses([]);setQuery("");setInputError("");setOpen(false)}
+ function fresh(){setSecret(current=>randomPlayer(current.name,leagueFilter));setGuesses([]);setQuery("");setInputError("");setOpen(false)}
  return <div className="play-shell wordle-shell">
   <div className="wordle-score"><div><span className="eyebrow">{mode==="daily"?"DAS TAGESRÄTSEL · "+dateKey():"TRAINING / ZUFALLSSPIELER"}</span><h2>FINDE DEN SPIELER</h2></div><div className="wordle-tries"><strong>{String(guesses.length).padStart(2,"0")}<small> / {MAX}</small></strong><span>VERSUCHE</span></div></div>
   <div className="wordle-legend"><span><i className="legend-exact"/> ÜBEREINSTIMMUNG</span><span><i className="legend-close"/> GLEICHE LIGA / JAHRGANG-RICHTUNG</span><span><i className="legend-miss"/> KEIN TREFFER</span></div>
@@ -58,7 +58,8 @@ function WordleRound({mode}:{mode:"daily"|"free"}){
 }
 export function FootballWordle(){
  const[mode,setMode]=useState<"daily"|"free">("free");
- return <><Intro index="05" kind="SPIELER-RÄTSEL" title="FOOTBALL WORDLE" description="Errate einen Fußballprofi in höchstens acht Versuchen. Nation, Karriereverein, Liga, Position und Geburtsjahr verraten dir, wie nah du dran bist."/><section className="config-panel wordle-switch"><span className="control-label">SPIELVARIANTE WÄHLEN</span><div className="category-tabs"><button className={mode==="free"?"active":""} onClick={()=>setMode("free")}>FREIES SPIEL</button><button className={mode==="daily"?"active":""} onClick={()=>setMode("daily")}>TAGESRÄTSEL</button></div><p>Im Tagesrätsel bekommen alle am selben lokalen Kalendertag denselben Spieler. Dein Tippverlauf wird auf diesem Gerät gespeichert.</p></section><WordleRound key={mode} mode={mode}/></>
+ const[leagueFilter,setLeagueFilter]=useState<League|"all">("all");
+ return <><Intro index="05" kind="SPIELER-RÄTSEL" title="FOOTBALL WORDLE" description="Errate einen Fußballprofi in höchstens acht Versuchen. Nation, Karriereverein, Liga, Position und Geburtsjahr verraten dir, wie nah du dran bist."/><section className="config-panel wordle-switch"><span className="control-label">SPIELVARIANTE WÄHLEN</span><div className="category-tabs"><button className={mode==="free"?"active":""} onClick={()=>setMode("free")}>FREIES SPIEL</button><button className={mode==="daily"?"active":""} onClick={()=>setMode("daily")}>TAGESRÄTSEL</button></div>{mode==="free"&&<label className="wordle-league-filter">LIGA IM TRAINING <select value={leagueFilter} onChange={e=>setLeagueFilter(e.target.value as League|"all")}><option value="all">ALLE 5 LIGEN</option>{leagueNames.map(name=><option key={name} value={name}>{name}</option>)}</select></label>}<p>Im Tagesrätsel bekommen alle am selben lokalen Kalendertag denselben Spieler. Dein Tippverlauf wird auf diesem Gerät gespeichert.</p></section><WordleRound key={mode+"-"+leagueFilter} mode={mode} leagueFilter={mode==="daily"?"all":leagueFilter}/></>
 }
 export function ClubCompass(){
  const[deck,setDeck]=useState(()=>shuffle(allClubs).slice(0,12));
