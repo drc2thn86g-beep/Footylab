@@ -11,7 +11,8 @@ export type ApiTeam={id:number;name:string;logo:string|null;leagueId:number;leag
 export type ApiPlayer={id:number;name:string;age:number|null;position:string|null;number:number|null;photo:string|null};
 type ApiResponse={response?:unknown[];results?:number;errors?:unknown};
 export class ApiProviderError extends Error{
- constructor(message:string,readonly httpStatus?:number){super(message);this.name="ApiProviderError"}
+ readonly httpStatus?:number;
+ constructor(message:string,httpStatus?:number){super(message);this.name="ApiProviderError";this.httpStatus=httpStatus}
 }
 function meaningfulErrors(value:unknown):boolean{
  if(Array.isArray(value))return value.length>0;
