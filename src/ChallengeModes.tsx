@@ -26,7 +26,7 @@ export function CareerPathImproved(){
  const q=deck[index];
  const options=useMemo(()=>q?shuffle(q.choices):[],[q]);
  const factor=mode==="type"?2:1;
- function reset(nextMode:EntryMode=mode){setMode(nextMode);setDeck(shuffle(careers).slice(0,10));setIndex(0);setAnswer(null);setScore(0)}
+ function reset(nextMode:EntryMode=mode){setMode(nextMode);setDeck(shuffle(nextMode==="type"?careers.filter(q=>new Set(q.clubs).size>=2):careers).slice(0,10));setIndex(0);setAnswer(null);setScore(0)}
  function guess(name:string){
   if(answer||!q)return;
   const correct=normalizeName(name)===normalizeName(q.answer);
