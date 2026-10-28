@@ -10,6 +10,13 @@
       "/api/*"
     ]
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "footylab-data",
+      "database_id": "88d3e69e-f1ef-4c21-9e80-4db190f0bab6"
+    }
+  ],
   "triggers": {
     "crons": [
       "23 3 * * *"
