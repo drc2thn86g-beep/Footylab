@@ -44,37 +44,21 @@ export async function syncFootyData(db:D1,apiKey:string):Promise<SyncResult>{
     "INSERT INTO api_teams (id,name,league_id,league,country,logo_url,last_synced_at) VALUES (?,?,?,?,?,?,NULL) ON CONFLICT(id) DO UPDATE SET name=excluded.name,league_id=excluded.league_id,league=excluded.league,country=excluded.country,logo_url=COALESCE(excluded.logo_url,api_teams.logo_url)"
    ).bind(team.id,team.name,team.leagueId,team.league,team.country,team.logo).run();
   };
+  // Import known/verified team IDs without spending a discovery request.
   for(const seed of SEED_CLUBS){
+   if(!seed.knownId)continue;
    const league=LEAGUES.find(item=>item.id===seed.leagueId);
    if(!league)continue;
    const key="seed:2026:"+seed.leagueId+":"+seed.name;
-   const previous=await stateGet(db,key);
-   if(previous==="complete"||isRecent(previous,RETRY_UNMATCHED_DAYS))continue;
-   // A confirmed official ID needs no lookup: Manchester United (33).
-   if(seed.knownId){
-    await storeClub({id:seed.knownId,name:seed.name,leagueId:league.id,
-     league:league.name,country:league.country,logo:null});
-    await stateSet(db,key,"complete");
-    discovered++;
-    continue;
-   }
-   if(discoveryRequests>=MAX_DISCOVERY_PER_RUN)break;
-   discoveryRequests++;
-   // On a failed name lookup, don't spend requests retrying it each day.
-   await stateSet(db,key,nowUtc());
-   try{
-    await paceApiRequest();
-    const data=await apiFootballGet("teams",{name:seed.name},apiKey);
-    const team=parseNamedTeam(data,league,seed.name);
-    if(!team)throw new ApiProviderError("Kein eindeutiger Verein gefunden: "+seed.name);
-    await storeClub(team);
-    await stateSet(db,key,"complete");
-    discovered++;
-   }catch(err){
-    failed++;lastProblem=errText(err);
-    if(isAccessProblem(err))break;
-   }
+   if(await stateGet(db,key)==="complete")continue;
+   await storeClub({id:seed.knownId,name:seed.name,leagueId:league.id,
+    league:league.name,country:league.country,logo:null});
+   await stateSet(db,key,"complete");
+   discovered++;
   }
+  // Prioritize usable player rosters. This is important when the provider
+  // rate-limits discovery: a verified club can still import real players first.
+  let accessBlocked=false;
   const list=await leastRecentlySyncedTeams(db,MAX_SQUADS_PER_RUN);
   for(const team of list){
    try{
@@ -95,8 +79,36 @@ export async function syncFootyData(db:D1,apiKey:string):Promise<SyncResult>{
     updatedTeams++;updatedPlayers+=squad.length;
    }catch(err){
     failed++;lastProblem=errText(err);
-    if(isAccessProblem(err)||failed>=6)break;
+    if(isAccessProblem(err)){accessBlocked=true;break;}
+    if(failed>=6)break;
    }
+  }
+  // Never make another provider request after a 429/403/401 error.
+  if(!accessBlocked){
+  for(const seed of SEED_CLUBS){
+   if(seed.knownId)continue;
+   const league=LEAGUES.find(item=>item.id===seed.leagueId);
+   if(!league)continue;
+   const key="seed:2026:"+seed.leagueId+":"+seed.name;
+   const previous=await stateGet(db,key);
+   if(previous==="complete"||isRecent(previous,RETRY_UNMATCHED_DAYS))continue;
+   if(discoveryRequests>=MAX_DISCOVERY_PER_RUN)break;
+   discoveryRequests++;
+   // On a failed name lookup, don't spend requests retrying it each day.
+   await stateSet(db,key,nowUtc());
+   try{
+    await paceApiRequest();
+    const data=await apiFootballGet("teams",{name:seed.name},apiKey);
+    const team=parseNamedTeam(data,league,seed.name);
+    if(!team)throw new ApiProviderError("Kein eindeutiger Verein gefunden: "+seed.name);
+    await storeClub(team);
+    await stateSet(db,key,"complete");
+    discovered++;
+   }catch(err){
+    failed++;lastProblem=errText(err);
+    if(isAccessProblem(err))break;
+   }
+  }
   }
   if(updatedTeams>0)await stateSet(db,"last_success",nowUtc());
   if(lastProblem)await stateSet(db,"last_error",lastProblem);
