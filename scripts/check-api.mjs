@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import{apiFootballGet,parseSquad,parseTeams,LEAGUES}from"../worker/apiFootball.ts";
+import{apiFootballGet,parseSquad,parseTeams,parseNamedTeam,LEAGUES}from"../worker/apiFootball.ts";
+import{SEED_CLUBS}from"../worker/seedClubs.ts";
 import worker from"../worker/index.ts";
 const payload=(response,errors=[])=>new Response(JSON.stringify({response,errors,results:response.length}),{status:200,headers:{"content-type":"application/json"}});
 const sampleTeams=[{team:{id:50,name:"Manchester City",logo:"https://media.example/team.png"}},{team:{id:1,name:"",logo:null}},{junk:true}];
@@ -7,6 +8,21 @@ const teams=parseTeams(sampleTeams,LEAGUES[0]);
 assert.equal(teams.length,1);
 assert.equal(teams[0].leagueId,39);
 assert.equal(teams[0].id,50);
+assert.equal(SEED_CLUBS.length,96);
+assert.equal(SEED_CLUBS[0].knownId,33);
+const namedClub=parseNamedTeam([
+ {team:{id:33,name:"Manchester United",country:"England",logo:"https://media.example/united.png"}},
+ {team:{id:3300,name:"Manchester United U21",country:"England"}}
+],LEAGUES[0],"Manchester United");
+assert.equal(namedClub?.id,33);
+assert.equal(parseNamedTeam([
+ {team:{id:40,name:"Manchester City",country:"England"}},
+ {team:{id:42,name:"Manchester United",country:"England"}}
+],LEAGUES[0],"Manchester United")?.id,42);
+assert.equal(parseNamedTeam([
+ {team:{id:1,name:"Unrelated Club",country:"Spain"}}
+],LEAGUES[0],"Manchester United"),null);
+
 const playerRows=Array.from({length:15},(_,i)=>({id:i+10,name:"Player "+i,age:21,position:"Midfielder",number:i+1,photo:"https://media.example/"+i+".png"}));
 const roster=parseSquad([{team:{id:50},players:playerRows}],50);
 assert.equal(roster.length,15);
