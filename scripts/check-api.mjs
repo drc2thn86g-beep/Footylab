@@ -46,6 +46,20 @@ assert.equal(apiResult.length,3);
 assert.equal(called,true);
 await assert.rejects(()=>apiFootballGet("teams",{},""),/Schlüssel fehlt/);
 await assert.rejects(()=>apiFootballGet("teams",{league:"39"},"secret",async()=>payload([],{plan:"restricted"})),/eingeschränkten/);
+await assert.rejects(
+ ()=>apiFootballGet("players/squads",{team:"33"},"secret",
+  async()=>new Response('{"errors":{"rateLimit":"Too many requests"}}',{
+   status:429,headers:{"x-ratelimit-requests-remaining":"89","x-ratelimit-remaining":"0"}
+  })),
+ /Minutenlimit erreicht/
+);
+await assert.rejects(
+ ()=>apiFootballGet("players/squads",{team:"33"},"secret",
+  async()=>new Response('{"errors":{"rateLimit":"Too many requests"}}',{
+   status:429,headers:{"x-ratelimit-requests-remaining":"0","x-ratelimit-remaining":"10"}
+  })),
+ /Tageskontingent aufgebraucht/
+);
 const offline=await worker.fetch(new Request("https://footylab.example/api/footy/status"),{
  ASSETS:{fetch:async()=>new Response("site works")}
 });
