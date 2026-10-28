@@ -5,6 +5,8 @@ type Env={
  ASSETS:{fetch(request:Request):Promise<Response>};
  DB?:D1;
  API_FOOTBALL_KEY?:string;
+ /** Optional admin-only trigger for a one-time production sync. Never put this in the frontend. */
+ FOOTY_IMPORT_TOKEN?:string;
  /** Opt-in only after confirming image/club-logo rights for this public website. */
  PUBLIC_API_IMAGES?:"1"|"0";
 };
@@ -20,6 +22,21 @@ function json(data:unknown,status=200,maxAge=120){
 function failure(status:number,message:string){return json({ok:false,error:message},status,0)}
 async function handler(request:Request,env:Env):Promise<Response>{
  const url=new URL(request.url);
+ // The import route is disabled unless a separate 256-bit admin secret is configured.
+ // Only POST with the secret in an Authorization header can invoke provider requests.
+ if(url.pathname==="/api/footy/import" && request.method==="POST"){
+  if(!env.FOOTY_IMPORT_TOKEN||!env.DB||!env.API_FOOTBALL_KEY)
+   return failure(503,"Manueller Import ist nicht freigeschaltet.");
+  if(request.headers.get("Authorization")!=="Bearer "+env.FOOTY_IMPORT_TOKEN)
+   return failure(401,"Nicht autorisiert.");
+  try{
+   const result=await syncFootyData(env.DB,env.API_FOOTBALL_KEY);
+   return json({ok:true,...result},200,0);
+  }catch(err){
+   console.error("FootyLab manueller API-Sync:",err instanceof Error?err.message:"Unbekannter Fehler");
+   return failure(500,"Import fehlgeschlagen. Details unter /api/footy/status.");
+  }
+ }
  if(request.method!=="GET")return failure(405,"Nur GET-Anfragen sind erlaubt.");
  if(url.pathname==="/api/footy/status"){
   if(!env.DB)return json({ok:true,configured:false,provider:"API-Football",message:"Cloudflare D1 ist noch nicht verbunden. Die bestehenden Spiele laufen weiterhin."},200,0);
