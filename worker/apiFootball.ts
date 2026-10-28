@@ -51,6 +51,28 @@ export function parseTeams(input:unknown[],league:(typeof LEAGUES)[number]):ApiT
  }
  return [...new Map(out.map(team=>[team.id,team])).values()];
 }
+/** Resolve a single current-season seed club through the season-independent /teams?name= API.
+ * An exact name wins. A unique country-matched variant may be accepted when
+ * the API uses another spelling (e.g. FC/Stuttgart); never accept youth/reserve teams.
+ */
+export function parseNamedTeam(input:unknown[],league:(typeof LEAGUES)[number],expectedName:string):ApiTeam|null{
+ const normalized=(name:string)=>name.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+ const country=league.country==="Spanien"?"Spain":league.country==="Deutschland"?"Germany":
+   league.country==="Italien"?"Italy":league.country==="Frankreich"?"France":league.country;
+ const eligible=input.filter(item=>{
+  if(!item||typeof item!=="object")return false;
+  const team=(item as Record<string,unknown>).team as Record<string,unknown>|undefined;
+  if(!team||!positiveInt(team.id)||!str(team.name))return false;
+  if(/\\b(women|femenino|feminine|femminile|feminin|reserves|youth|u(?:1[5-9]|2[0-3])|ii)\\b/i.test(str(team.name)))return false;
+  const teamCountry=str(team.country);
+  return teamCountry===country||(country==="France"&&teamCountry==="Monaco");
+ });
+ const parsed=parseTeams(eligible,league);
+ const exact=parsed.find(team=>normalized(team.name)===normalized(expectedName));
+ if(exact)return exact;
+ // Country-filtered and unique provider answer; names can differ by local spelling.
+ return parsed.length===1?parsed[0]:null;
+}
 export function parseSquad(input:unknown[],teamId:number):ApiPlayer[]{
  const found=input.find(entry=>entry&&typeof entry==="object"&&
    ((entry as Record<string,unknown>).team as Record<string,unknown>|undefined)?.id===teamId) as Record<string,unknown>|undefined;
