@@ -56,14 +56,14 @@ export function parseTeams(input:unknown[],league:(typeof LEAGUES)[number]):ApiT
  * the API uses another spelling (e.g. FC/Stuttgart); never accept youth/reserve teams.
  */
 export function parseNamedTeam(input:unknown[],league:(typeof LEAGUES)[number],expectedName:string):ApiTeam|null{
- const normalized=(name:string)=>name.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+ const normalized=(name:string)=>name.normalize("NFD").replace(/\p{M}/gu,"").toLowerCase().replace(/[^a-z0-9]/g,"");
  const country=league.country==="Spanien"?"Spain":league.country==="Deutschland"?"Germany":
    league.country==="Italien"?"Italy":league.country==="Frankreich"?"France":league.country;
  const eligible=input.filter(item=>{
   if(!item||typeof item!=="object")return false;
   const team=(item as Record<string,unknown>).team as Record<string,unknown>|undefined;
   if(!team||!positiveInt(team.id)||!str(team.name))return false;
-  if(/\\b(women|femenino|feminine|femminile|feminin|reserves|youth|u(?:1[5-9]|2[0-3])|ii)\\b/i.test(str(team.name)))return false;
+  if(/\b(women|femenino|feminine|femminile|feminin|reserves|youth|u(?:1[5-9]|2[0-3])|ii)\b/i.test(str(team.name)))return false;
   const teamCountry=str(team.country);
   return teamCountry===country||(country==="France"&&teamCountry==="Monaco");
  });
