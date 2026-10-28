@@ -40,6 +40,14 @@ const denied=await worker.fetch(new Request("https://footylab.example/api/footy/
  ASSETS:{fetch:async()=>new Response("site works")}
 });
 assert.equal(denied.status,503);
+const importUnavailable=await worker.fetch(new Request("https://footylab.example/api/footy/import",{method:"POST"}),{
+ ASSETS:{fetch:async()=>new Response("site works")}
+});
+assert.equal(importUnavailable.status,503);
+const importUnauthorized=await worker.fetch(new Request("https://footylab.example/api/footy/import",{method:"POST"}),{
+ ASSETS:{fetch:async()=>new Response("site works")},DB:{},API_FOOTBALL_KEY:"key",FOOTY_IMPORT_TOKEN:"private-admin-token"
+});
+assert.equal(importUnauthorized.status,401);
 const assets=await worker.fetch(new Request("https://footylab.example/assets/app.js"),{
  ASSETS:{fetch:async()=>new Response("static assets remain available")}
 });
