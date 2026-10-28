@@ -1,14 +1,17 @@
-import{apiFootballGet,ApiProviderError,LEAGUES,parseSquad,parseTeams}from"./apiFootball.ts";
+import{apiFootballGet,ApiProviderError,LEAGUES,parseSquad,parseNamedTeam}from"./apiFootball.ts";
+import{SEED_CLUBS}from"./seedClubs.ts";
 import{leastRecentlySyncedTeams,stateGet,stateSet,type D1}from"./store.ts";
 
-/** The free API-Football tier advertises 100 req/day.
- * 5 league discovery calls on the first/weekly run + max 32 squad calls = 37.
- * It intentionally takes several days to refresh every team and never
- * spends a quota request for a page view.
+/** The free plan allows 100 requests/day AND only 10 requests/minute.
+ * The seed directory comes from 2026/27 league participant lists, but every
+ * club ID is looked up without a season. Squads are always the current ones.
+ * Rediscovery is capped, failures are retried after seven days, and API
+ * requests are paced to avoid 429 rate limits.
  */
-const SEASON="2026";
-const DISCOVERY_INTERVAL_DAYS=7;
-const MAX_SQUADS_PER_RUN=32;
+const MAX_DISCOVERY_PER_RUN=8;
+const RETRY_UNMATCHED_DAYS=7;
+const MAX_SQUADS_PER_RUN=16;
+const API_REQUEST_SPACING_MS=7000;
 export type SyncResult={discovered:number;updatedTeams:number;updatedPlayers:number;failed:number;note:string};
 function nowUtc(){return new Date().toISOString()}
 function isRecent(date:string|null,days:number){
@@ -29,27 +32,53 @@ export async function syncFootyData(db:D1,apiKey:string):Promise<SyncResult>{
  await stateSet(db,"last_start",started);
  let discovered=0,updatedTeams=0,updatedPlayers=0,failed=0,lastProblem="";
  try{
-  for(const league of LEAGUES){
-   const key="league:"+league.id+":discovered";
-   if(isRecent(await stateGet(db,key),DISCOVERY_INTERVAL_DAYS))continue;
+  let discoveryRequests=0;
+  let lastApiRequestAt=0;
+  async function paceApiRequest(){
+   const wait=Math.max(0,lastApiRequestAt+API_REQUEST_SPACING_MS-Date.now());
+   if(wait>0)await new Promise<void>(resolve=>setTimeout(resolve,wait));
+   lastApiRequestAt=Date.now();
+  }
+  const storeClub=async(team:{id:number;name:string;leagueId:number;league:string;country:string;logo:string|null})=>{
+   await db.prepare(
+    "INSERT INTO api_teams (id,name,league_id,league,country,logo_url,last_synced_at) VALUES (?,?,?,?,?,?,NULL) ON CONFLICT(id) DO UPDATE SET name=excluded.name,league_id=excluded.league_id,league=excluded.league,country=excluded.country,logo_url=COALESCE(excluded.logo_url,api_teams.logo_url)"
+   ).bind(team.id,team.name,team.leagueId,team.league,team.country,team.logo).run();
+  };
+  for(const seed of SEED_CLUBS){
+   const league=LEAGUES.find(item=>item.id===seed.leagueId);
+   if(!league)continue;
+   const key="seed:2026:"+seed.leagueId+":"+seed.name;
+   const previous=await stateGet(db,key);
+   if(previous==="complete"||isRecent(previous,RETRY_UNMATCHED_DAYS))continue;
+   // A confirmed official ID needs no lookup: Manchester United (33).
+   if(seed.knownId){
+    await storeClub({id:seed.knownId,name:seed.name,leagueId:league.id,
+     league:league.name,country:league.country,logo:null});
+    await stateSet(db,key,"complete");
+    discovered++;
+    continue;
+   }
+   if(discoveryRequests>=MAX_DISCOVERY_PER_RUN)break;
+   discoveryRequests++;
+   // On a failed name lookup, don't spend requests retrying it each day.
+   await stateSet(db,key,nowUtc());
    try{
-    const data=await apiFootballGet("teams",{league:String(league.id),season:SEASON},apiKey);
-    const teams=parseTeams(data,league);
-    // Empty/restricted seasons must never overwrite successfully cached rosters.
-    if(teams.length<10)throw new ApiProviderError("Keine vollständige aktuelle Teamliste für "+league.name+" verfügbar");
-    await db.batch(teams.map(team=>db.prepare(
-     "INSERT INTO api_teams (id,name,league_id,league,country,logo_url,last_synced_at) VALUES (?,?,?,?,?,?,NULL) ON CONFLICT(id) DO UPDATE SET name=excluded.name,league_id=excluded.league_id,league=excluded.league,country=excluded.country,logo_url=excluded.logo_url"
-    ).bind(team.id,team.name,team.leagueId,team.league,team.country,team.logo)));
-    discovered+=teams.length;
-    await stateSet(db,key,nowUtc());
+    await paceApiRequest();
+    const data=await apiFootballGet("teams",{name:seed.name},apiKey);
+    const team=parseNamedTeam(data,league,seed.name);
+    if(!team)throw new ApiProviderError("Kein eindeutiger Verein gefunden: "+seed.name);
+    await storeClub(team);
+    await stateSet(db,key,"complete");
+    discovered++;
    }catch(err){
     failed++;lastProblem=errText(err);
-    if(isAccessProblem(err))break; // Do not burn the free daily quota on repeated plan errors.
+    if(isAccessProblem(err))break;
    }
   }
   const list=await leastRecentlySyncedTeams(db,MAX_SQUADS_PER_RUN);
   for(const team of list){
    try{
+    await paceApiRequest();
     const response=await apiFootballGet("players/squads",{team:String(team.id)},apiKey);
     const squad=parseSquad(response,team.id);
     const checkedAt=nowUtc();
