@@ -30,9 +30,19 @@ export async function apiFootballGet(path:"teams"|"players/squads",params:Record
  const url=new URL(PROVIDER_BASE+"/"+path);
  for(const [k,v]of Object.entries(params))url.searchParams.set(k,v);
  let response:Response;
- try{response=await fetcher(url.toString(),{headers:{"x-apisports-key":key,"accept":"application/json"},signal:AbortSignal.timeout(12000)})}
+ try{response=await fetcher(url.toString(),{headers:{"x-apisports-key":key},signal:AbortSignal.timeout(12000)})}
  catch{throw new ApiProviderError("Keine Verbindung zur Fußball-API")}
- if(!response.ok)throw new ApiProviderError("Fußball-API lieferte HTTP "+response.status,response.status);
+ if(!response.ok){
+  if(response.status===429){
+   const daily=response.headers.get("x-ratelimit-requests-remaining");
+   const perMinute=response.headers.get("x-ratelimit-remaining");
+   const detail=daily==="0"?"Tageskontingent aufgebraucht":
+    perMinute==="0"?"Minutenlimit erreicht":
+    "Rate-Limit erreicht; Kontingent bzw. temporäre Sperre prüfen";
+   throw new ApiProviderError("API-Football HTTP 429: "+detail,429);
+  }
+  throw new ApiProviderError("Fußball-API lieferte HTTP "+response.status,response.status);
+ }
  let json:ApiResponse;
  try{json=await response.json() as ApiResponse}catch{throw new ApiProviderError("Ungültige API-Antwort")}
  if(meaningfulErrors(json.errors))throw new ApiProviderError("Provider meldet eingeschränkten oder fehlerhaften Zugriff (Plan/Saison/Kontingent überprüfen)");
